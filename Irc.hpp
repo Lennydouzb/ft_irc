@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/08 11:20:56 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/08 13:52:23 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -18,6 +18,8 @@
 #include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
+#include <arpa/inet.h>
+#include <cstring>
 
 class Irc
 {

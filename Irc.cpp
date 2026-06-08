@@ -6,31 +6,38 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/08 11:21:52 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/08 13:54:50 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Irc.hpp"
+#include <netinet/in.h>
 
 Irc::Irc(u_int16_t port, std::string password)
 {
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
+	if (sockfd < 0)
+		throw Irc::TheException("Error while launching the server");
 	sockaddr_in serverAddress;
+	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
 	serverAddress.sin_port = htons(port);
-	serverAddress.sin_addr.s_addr = INADDR_ANY;
-	bind(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress));
+	serverAddress.sin_addr.s_addr = inet_addr("127.0.0.1");
+	if(bind(sockfd, (struct sockaddr*)&serverAddress, sizeof(serverAddress)) < 0)
+		Irc::TheException("Something went wrong while launchine the server");
 	this->password = password;
 	this->port = port;
 	// second parameter is the size of the queue
-	listen(sockfd, 5);
+	if (listen(sockfd, 5) < 0)
+		Irc::TheException("Something went wrong while launchine the server");
 }
 
 Irc::~Irc(){close(sockfd);}
 
-void Irc::startConnection(User &aUser, std::string port, std::string password)
+void Irc::startConnection(User &aUser, uint16_t port, std::string password)
 {
 	if (password != this->password)
-		this::theException("Nuh uh wrong password");
+		throw Irc::TheException("nuh uh");
+	sockaddr_in
 }
 
