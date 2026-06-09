@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/08 14:03:31 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/09 14:15:22 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -34,5 +34,5 @@ class User
 
 		User(int fd, std::string nickname, std::string username);
 		~User();
-		void	tryConnection(Irc &anIrc, uint16_t port, std::string password);
-};
+		static void	tryConnection(Irc &anIrc, uint16_t port, std::string password);
+}

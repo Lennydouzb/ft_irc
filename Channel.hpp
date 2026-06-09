@@ -6,11 +6,11 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:37:07 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/08 13:55:13 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/09 14:26:36 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
-#include <string>
+#include "includes.hpp"
 
 class Channel 
 {
