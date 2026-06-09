@@ -22,10 +22,4 @@
 #include "Channel.hpp"
 #include <arpa/inet.h>
 #include <cstring>
-
-typedef struct s_pollfd
-{
-    int   fd;
-    short events;
-    short revents;
-} t_pollfd;
+#include <poll.h>

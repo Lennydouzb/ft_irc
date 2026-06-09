@@ -10,36 +10,45 @@
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
-#include "includes.hpp"
+#include <vector>
+#include <poll.h>
+#include <string>
+#include <iostream>
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+#include <cstring>
+#include <unistd.h>
+
 
 class Irc
 {
 	private:
 		std::string password;
-		uint16_t	port;
+		u_int16_t	port;
 		int			sockfd;
 
-		std::vector<Channel>	openedChannel;
-		std::vector<Dm>			openedDm;
-		std::vector<User>		activeUsers;
-		std::vector<t_pollfd>	pollfds;
+	//	std::vector<Channel>	openedChannel;
+		//std::vector<Dm>			openedDm;
+		//std::vector<User>		activeUsers;
+		std::vector<struct pollfd>	pollfds;
 		bool					isRunning;
-		void	startConnection();
-		void	handleMessage(User &aUser, std::string message);
-		void	handleDisconnection(User &aUser);
+		//void	startConnection();
+		//void	handleMessage(User &aUser, std::string message);
+		//void	handleDisconnection(User &aUser);
 
 	public:
-	class TheException: public std::exception
+		class TheException: public std::exception
 		{
-		private:
-			std::string message;
-		public:
-			~TheException() throw();
-			TheException(std::string message);
-			const char *what() const throw(); 
+			private:
+				std::string message;
+			public:
+				~TheException() throw();
+				TheException(std::string message);
+				const char *what() const throw(); 
 		};
 
-		Irc(uint16_t port, std::string password);
+		Irc(u_int16_t port, std::string password);
 		~Irc();
 		void	run();
 };

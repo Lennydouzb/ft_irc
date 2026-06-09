@@ -34,5 +34,5 @@ class User
 
 		User(int fd, std::string nickname, std::string username);
 		~User();
-		static void	tryConnection(Irc &anIrc, uint16_t port, std::string password);
-}
+		static void	tryConnection(Irc &anIrc, u_int16_t port, std::string password);
+};

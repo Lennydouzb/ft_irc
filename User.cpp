@@ -28,7 +28,7 @@ User::~User()
 	}
 }
 
-void User::tryConnection(Irc &anIrc, uint16_t port, std::string password)
+void User::tryConnection(Irc &anIrc, u_int16_t port, std::string password)
 {
 	anIrc.startConnection(*this, port, password);	
 }

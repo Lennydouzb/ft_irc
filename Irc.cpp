@@ -30,18 +30,22 @@ Irc::Irc(u_int16_t port, std::string password)
 	// second parameter is the size of the queue
 	if (listen(sockfd, 5) < 0)
 		throw Irc::TheException("Something went wrong while launchine the server");
-	this->pollfds.push_back({sockfd, POLLIN, 0});
+	pollfd serverPollfd;
+	serverPollfd.fd = sockfd;
+	serverPollfd.events = POLLIN;
+	serverPollfd.revents = 0;
+	this->pollfds.push_back(serverPollfd);
 	this->isRunning = true;
 }
 
 Irc::~Irc(){close(sockfd);}
 
-void Irc::startConnection(User &aUser, uint16_t port, std::string password)
-{
-	if (password != this->password)
-		throw Irc::TheException("nuh uh");
-	sockaddr_in
-}
+//void Irc::startConnection(User &aUser, u_int16_t port, std::string password)
+//{
+	//if (password != this->password)
+//		throw Irc::TheException("nuh uh");
+	//sockaddr_in
+//}
 
 void Irc::run()
 {
@@ -53,14 +57,38 @@ void Irc::run()
 		}
 		for (size_t i = 0; i < this->pollfds.size(); i++)
 		{
-			if (this->pollfds[i].revents & POLLIN)
+			//if its the server socket
+			if (this->pollfds[i].fd = this->sockfd)
 			{
-				if (this->pollfds[i].fd = this->sockfd)
+				if (this->pollfds[i].revents & POLLIN)
 				{
 					int clientFd = accept(this->sockfd, NULL, NULL);
 					if (clientFd < 0)
 						throw Irc::TheException("Error while accepting a new client");
-					this->pollfds.push_back({clientFd, POLLIN, 0});
+					struct pollfd newClient;
+					newClient.fd = clientFd;
+					newClient.events = POLLIN;
+					newClient.revents = 0;
+					this->pollfds.push_back(newClient);
+				}
+			}
+			//if its client socket
+			else
+			{
+				if (this->pollfds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
+					{
+						close(this->pollfds[i].fd);
+						this->pollfds.erase(this->pollfds.begin() + i);
+						i--;
+						continue;
+					}
+				else
+				{
+					recv(this->pollfds[i].fd, buffer, sizeof(buffer), 0);
+					//handle the message
+					//TODO
+					std::cout << "Received message: " << buffer << std::endl;
+					memset(buffer, 0, sizeof(buffer));
 				}
 			}
 		}
