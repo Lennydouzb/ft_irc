@@ -19,6 +19,7 @@
 #include <arpa/inet.h>
 #include <cstring>
 #include <unistd.h>
+#include <fcntl.h>
 
 
 class Irc
@@ -31,7 +32,8 @@ class Irc
 	//	std::vector<Channel>	openedChannel;
 		//std::vector<Dm>			openedDm;
 		//std::vector<User>		activeUsers;
-		std::vector<std::pair<struct pollfd, std::string> >	pollfds;
+		std::vector<struct pollfd>	pollfds;
+		std::vector<std::string>	messages;
 		bool					isRunning;
 		//void	startConnection();
 		//void	handleMessage(User &aUser, std::string message);
