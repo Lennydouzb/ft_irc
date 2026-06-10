@@ -36,7 +36,7 @@ Irc::Irc(u_int16_t port, std::string password)
 	serverPollfd.fd = sockfd;
 	serverPollfd.events = POLLIN;
 	serverPollfd.revents = 0;
-	this->pollfds.push_back(serverPollfd);
+	this->pollfds.push_back(std::make_pair(serverPollfd, std::string()));
 
 	this->isRunning = true;
 }
@@ -54,16 +54,16 @@ void Irc::run()
 {
 	while (this->isRunning)
 	{
-		if (poll(&this->pollfds[0], this->pollfds.size(), -1) < 0)
+		if (poll(&this->pollfds[0].first, this->pollfds.size(), -1) < 0)
 		{
 			throw Irc::TheException("Error while polling");	
 		}
 		for (size_t i = 0; i < this->pollfds.size(); i++)
 		{
 			//if its the server socket
-			if (this->pollfds[i].fd == this->sockfd)
+			if (this->pollfds[i].first.fd == this->sockfd)
 			{
-				if (this->pollfds[i].revents & POLLIN)
+				if (this->pollfds[i].first.revents & POLLIN)
 				{
 					int clientFd = accept(this->sockfd, NULL, NULL);
 					if (clientFd < 0)
@@ -72,45 +72,43 @@ void Irc::run()
 					newClient.fd = clientFd;
 					newClient.events = POLLIN;
 					newClient.revents = 0;
-					this->pollfds.push_back(newClient);
+					this->pollfds.push_back(std::make_pair(newClient, std::string()));
 				}
 			}
 			//if its client socket
 			else
 			{
-				if (this->pollfds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
+				if (this->pollfds[i].first.revents & (POLLHUP | POLLNVAL | POLLERR))
 					{
-						close(this->pollfds[i].fd);
+						close(this->pollfds[i].first.fd);
 						this->pollfds.erase(this->pollfds.begin() + i);
 						i--;
 						continue;
 					}
-				else if (this->pollfds[i].revents & POLLIN)
+				else if (this->pollfds[i].first.revents & POLLIN)
 				{
 					char buffer[1024];
 					memset(buffer, 0, sizeof(buffer));
-					std::string message;
-					int bytesRead = recv(this->pollfds[i].fd, buffer, sizeof(buffer), 0);
+					int bytesRead = recv(this->pollfds[i].first.fd, buffer, sizeof(buffer), 0);
 					while (bytesRead > 0)
 					{
-						message.append(buffer, bytesRead);
+						this->pollfds[i].second.append(buffer, bytesRead);
 						memset(buffer, 0, sizeof(buffer));
 
-						if (message.find("\n") != std::string::npos)
+						if (this->pollfds[i].second.find("\n") != std::string::npos)
 							break;
-						bytesRead = recv(this->pollfds[i].fd, buffer, sizeof(buffer) - 1, 0);
+						bytesRead = recv(this->pollfds[i].first.fd, buffer, sizeof(buffer) - 1, 0);
 					}
 					if (bytesRead <= 0)
 					{
-						close(this->pollfds[i].fd);
+						close(this->pollfds[i].first.fd);
 						this->pollfds.erase(this->pollfds.begin() + i);
 						i--;
 						if (bytesRead < 0)
 							throw Irc::TheException("Error while receiving message");
-					}
-					if (message.empty())
 						continue;
-					std::cout << "Received message: " << message << std::endl;
+					}
+					std::cout << "Received message: " << this->pollfds[i].second << std::endl;
 				}
 			}
 		}

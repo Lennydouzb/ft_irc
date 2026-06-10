@@ -31,7 +31,7 @@ class Irc
 	//	std::vector<Channel>	openedChannel;
 		//std::vector<Dm>			openedDm;
 		//std::vector<User>		activeUsers;
-		std::vector<struct pollfd>	pollfds;
+		std::vector<std::pair<struct pollfd, std::string> >	pollfds;
 		bool					isRunning;
 		//void	startConnection();
 		//void	handleMessage(User &aUser, std::string message);
