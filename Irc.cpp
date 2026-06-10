@@ -18,6 +18,8 @@ Irc::Irc(u_int16_t port, std::string password)
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
 	if (sockfd < 0)
 		throw Irc::TheException("Error while launching the server");
+	int opt = 1;
+	setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &opt, sizeof(opt));
 	sockaddr_in serverAddress;
 	memset(&serverAddress, 0, sizeof(serverAddress));
 	serverAddress.sin_family = AF_INET;
@@ -35,6 +37,7 @@ Irc::Irc(u_int16_t port, std::string password)
 	serverPollfd.events = POLLIN;
 	serverPollfd.revents = 0;
 	this->pollfds.push_back(serverPollfd);
+
 	this->isRunning = true;
 }
 
@@ -51,14 +54,14 @@ void Irc::run()
 {
 	while (this->isRunning)
 	{
-		while (poll(&this->pollfds[0], this->pollfds.size(), -1) < 0)
+		if (poll(&this->pollfds[0], this->pollfds.size(), -1) < 0)
 		{
 			throw Irc::TheException("Error while polling");	
 		}
 		for (size_t i = 0; i < this->pollfds.size(); i++)
 		{
 			//if its the server socket
-			if (this->pollfds[i].fd = this->sockfd)
+			if (this->pollfds[i].fd == this->sockfd)
 			{
 				if (this->pollfds[i].revents & POLLIN)
 				{
@@ -82,15 +85,44 @@ void Irc::run()
 						i--;
 						continue;
 					}
-				else
+				else if (this->pollfds[i].revents & POLLIN)
 				{
-					recv(this->pollfds[i].fd, buffer, sizeof(buffer), 0);
-					//handle the message
-					//TODO
-					std::cout << "Received message: " << buffer << std::endl;
+					char buffer[1024];
 					memset(buffer, 0, sizeof(buffer));
+					std::string message;
+					int bytesRead = recv(this->pollfds[i].fd, buffer, sizeof(buffer), 0);
+					while (bytesRead > 0)
+					{
+						message.append(buffer, bytesRead);
+						memset(buffer, 0, sizeof(buffer));
+
+						if (message.find("\n") != std::string::npos)
+							break;
+						bytesRead = recv(this->pollfds[i].fd, buffer, sizeof(buffer) - 1, 0);
+					}
+					if (bytesRead <= 0)
+					{
+						close(this->pollfds[i].fd);
+						this->pollfds.erase(this->pollfds.begin() + i);
+						i--;
+						if (bytesRead < 0)
+							throw Irc::TheException("Error while receiving message");
+					}
+					if (message.empty())
+						continue;
+					std::cout << "Received message: " << message << std::endl;
 				}
 			}
 		}
 	}
 }
+
+Irc::TheException::TheException(std::string msg)
+{
+	this->message = msg;
+}
+const char *Irc::TheException::what() const throw()
+{
+	return this->message.c_str();
+}
+Irc::TheException::~TheException() throw() {}
