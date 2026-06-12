@@ -10,20 +10,25 @@
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
-#include "includes.hpp"
+#include <vector>
+#include "User.hpp"
 
 class Channel 
 {
 	private:
+		std::vector<User*> operators;
+		std::vector<User*> users;
 	public:
-	class TheException: public std::exception
-	{
-	private:
-		std::string message;
-	public:
-		~TheException() throw();
-		TheException(std::string message);
-		const char *what() const throw(); 
-	};
-
+		class TheException: public std::exception
+		{
+		private:
+			std::string message;
+		public:
+			~TheException() throw();
+			TheException(std::string message);
+			const char *what() const throw(); 
+		};
+	Channel(User& theOperator);
+	~Channel();
+	void sendMessage(User &sender, std::string message);
 };

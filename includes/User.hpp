@@ -13,14 +13,18 @@
 #include <string>
 #include <unistd.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
+#include <poll.h>
+
 class Irc;
 class User
 {
 	private:
-		std::string nickname;
-		std::string username;
-		int			socket;
+		std::string 	nickname;
+		std::string 	username;
+		int				socket;
+		bool 			isPasswordVerified;
+		struct pollfd	pollfd;
+
 	public:
 		class TheException: public std::exception
 		{
@@ -34,5 +38,13 @@ class User
 
 		User(int fd, std::string nickname, std::string username);
 		~User();
-		static void	tryConnection(Irc &anIrc, u_int16_t port, std::string password);
+		void setpollfd(struct pollfd pollfd);
+		struct pollfd getpollfd();
+		int getSocket();
+		std::string getNickname();
+		std::string getUsername();
+		bool getIsPasswordVerified();
+		void setNickname(std::string nickname);
+		void setUsername(std::string username);
+		void verifyPassword();
 };

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/09 14:22:10 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/12 17:46:52 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -20,22 +20,20 @@
 #include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
-
+#include "../includes/parser/Parser.hpp"
+#include "../includes/User.hpp"
 
 class Irc
 {
 	private:
-		std::string password;
-		u_int16_t	port;
-		int			sockfd;
-
-	//	std::vector<Channel>	openedChannel;
+		std::string 	password;
+		u_int16_t		port;
+		int				sockfd;
+		//	std::vector<Channel>		openedChannel;
 		//std::vector<Dm>			openedDm;
-		//std::vector<User>		activeUsers;
-		std::vector<struct pollfd>	pollfds;
+		std::vector<User*>			Users;
 		std::vector<std::string>	messages;
-		bool					isRunning;
-		//void	startConnection();
+		Parser						Parser;
 		//void	handleMessage(User &aUser, std::string message);
 		//void	handleDisconnection(User &aUser);
 
@@ -54,3 +52,4 @@ class Irc
 		~Irc();
 		void	run();
 };
+

@@ -1,9 +1,11 @@
 CXX=c++
 CXXFLAGS = -Wall -Werror -Wextra -g -std=c++98
 NAME = ircserv
-SRC_DIR = ./
-SRCS = $(SRC_DIR)main.cpp \
-	   $(SRC_DIR)Irc.cpp \
+SRC_DIR = ./srcs/
+SRCS = main.cpp \
+	$(SRC_DIR)Irc.cpp \
+	$(SRC_DIR)User.cpp \
+	$(SRC_DIR)parser/Parser.cpp \
 
 OBJ_DIR = .build/
 OBJS = $(SRCS:$(SRC_DIR)%.cpp=$(OBJ_DIR)%.o)
@@ -15,6 +17,7 @@ $(NAME): $(OBJS)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.cpp
 	@mkdir -p $(OBJ_DIR)
+	@mkdir -p .build/parser
 	$(CXX) $(CXXFLAGS) $< -c -o $@
 
 fclean: clean

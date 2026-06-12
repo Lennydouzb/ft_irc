@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "User.hpp"
+#include "../includes/User.hpp"
 #include <sys/socket.h>
 
 User::User(int fd, std::string nickname, std::string username)
@@ -18,6 +18,7 @@ User::User(int fd, std::string nickname, std::string username)
 	this->nickname = nickname;
 	this->username = username;
 	this->socket = fd;
+	this->isPasswordVerified = false;
 }
 
 User::~User()
@@ -26,10 +27,51 @@ User::~User()
 	{
 		close(this->socket);
 	}
-}
+    close(this->pollfd.fd);
+    
 
-void User::tryConnection(Irc &anIrc, u_int16_t port, std::string password)
+}
+void User::verifyPassword()
 {
-	anIrc.startConnection(*this, port, password);	
+	this->isPasswordVerified = true;
 }
 
+void User::setpollfd(struct pollfd pollfd)
+{
+	this->pollfd = pollfd;
+}
+
+struct pollfd User::getpollfd()
+{
+	return this->pollfd;
+}
+
+int User::getSocket()
+{
+	return this->socket;
+}
+
+std::string User::getNickname()
+{
+	return this->nickname;
+}
+
+std::string User::getUsername()
+{
+	return this->username;
+}
+
+bool User::getIsPasswordVerified()
+{
+	return this->isPasswordVerified;
+}
+
+void User::setNickname(std::string nickname)
+{
+	this->nickname = nickname;
+}
+
+void User::setUsername(std::string username)
+{
+	this->username = username;
+}

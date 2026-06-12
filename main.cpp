@@ -1,6 +1,14 @@
 #include <cstdlib>
 #include <iostream>
-#include "includes.hpp"
+#include "includes/includes.hpp"
+#include <csignal>
+
+bool g_isrunning;
+void handleSignal(int signum)
+{
+	if (signum == SIGINT)
+		g_isrunning = false;
+}
 
 static void usage(const char *prog)
 {
@@ -25,6 +33,7 @@ int main(int argc, char **argv)
     try
     {
         Irc irc(port, argv[2]);
+		signal(SIGINT, handleSignal);
         irc.run();
     }
     catch (const std::exception &ex)

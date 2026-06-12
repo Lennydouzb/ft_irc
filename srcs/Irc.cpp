@@ -6,13 +6,14 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/09 14:16:20 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/12 17:46:43 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Irc.hpp"
+#include "../includes/Irc.hpp"
 #include <netinet/in.h>
 
+extern bool g_isrunning;
 Irc::Irc(u_int16_t port, std::string password)
 {
 	sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -36,34 +37,43 @@ Irc::Irc(u_int16_t port, std::string password)
 	serverPollfd.fd = sockfd;
 	serverPollfd.events = POLLIN;
 	serverPollfd.revents = 0;
-	this->pollfds.push_back(serverPollfd);
+	User *srvUser = new User(sockfd, "", "");
+	this->Users.push_back(srvUser);
+	this->Users.back()->setpollfd(serverPollfd);
 	this->messages.push_back("");
-	this->isRunning = true;
+	g_isrunning = true;
 }
 
-Irc::~Irc(){close(sockfd);}
-
-//void Irc::startConnection(User &aUser, u_int16_t port, std::string password)
-//{
-	//if (password != this->password)
-//		throw Irc::TheException("nuh uh");
-	//sockaddr_in
-//}
+Irc::~Irc()
+{
+	for (size_t i = 0; i < this->Users.size(); ++i) {
+        delete this->Users[i];
+    }
+    this->Users.clear();
+    this->messages.clear();
+}
 
 void Irc::run()
 {
-	while (this->isRunning)
+	while (g_isrunning)
 	{
-		if (poll(&this->pollfds[0], this->pollfds.size(), -1) < 0)
+		std::vector<pollfd> fds;
+		for (size_t idx = 0; idx < this->Users.size(); ++idx)
+		{
+			fds.push_back(this->Users[idx]->getpollfd());
+		}
+		if (fds.empty())
+			continue;
+		if (poll(&fds[0], fds.size(), -1) < 0)
 		{
 			throw Irc::TheException("Error while polling");	
 		}
-		for (size_t i = 0; i < this->pollfds.size(); i++)
+		for (size_t i = 0; i < fds.size(); i++)
 		{
 			//if its the server socket
-			if (this->pollfds[i].fd == this->sockfd)
+			if (fds[i].fd == this->sockfd)
 			{
-				if (this->pollfds[i].revents & POLLIN)
+				if (fds[i].revents & POLLIN)
 				{
 					int clientFd = accept(this->sockfd, NULL, NULL);
 					fcntl(clientFd, F_SETFL, O_NONBLOCK);
@@ -73,39 +83,41 @@ void Irc::run()
 					newClient.fd = clientFd;
 					newClient.events = POLLIN;
 					newClient.revents = 0;
-					this->pollfds.push_back(newClient);
+					User *newUser = new User(clientFd, "", "");
+					newUser->setpollfd(newClient);
+					this->Users.push_back(newUser);
 					this->messages.push_back(std::string());
 				}
 			}
 			//if its client socket
 			else
 			{
-				if (this->pollfds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
+				if (fds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
 					{
-						close(this->pollfds[i].fd);
-						this->pollfds.erase(this->pollfds.begin() + i);
+						delete this->Users[i];
+						this->Users.erase(this->Users.begin() + i);
 						this->messages.erase(this->messages.begin() + i);
 						i--;
 						continue;
 					}
-				else if (this->pollfds[i].revents & POLLIN)
+				else if (fds[i].revents & POLLIN)
 				{
 					char buffer[1024];
 					memset(buffer, 0, sizeof(buffer));
-					int bytesRead = recv(this->pollfds[i].fd, buffer, sizeof(buffer) - 1, 0);
+					int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
 
 					if (bytesRead < 0)
 					{
-						close(this->pollfds[i].fd);
-						this->pollfds.erase(this->pollfds.begin() + i);
+						delete this->Users[i];
+						this->Users.erase(this->Users.begin() + i);
 						this->messages.erase(this->messages.begin() + i);
 						i--;
-						throw Irc::TheException("Error while receiving message");
+						continue;
 					}
 					if (bytesRead == 0)
 					{
-						close(this->pollfds[i].fd);
-        				this->pollfds.erase(this->pollfds.begin() + i);
+						delete this->Users[i];
+						this->Users.erase(this->Users.begin() + i);
 						this->messages.erase(this->messages.begin() + i);
         				i--;
 						continue;
@@ -117,7 +129,8 @@ void Irc::run()
 					{
 						std::string message = this->messages[i].substr(0, pos + 1);
 						this->messages[i].erase(0, pos + 1);
-						std::cout << "Received message: " << message << std::endl;
+						std::cout << message << std::endl;
+						this->Parser.parse(*(this->Users[i]), message);
 					}
 				}
 			}
