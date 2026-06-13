@@ -130,7 +130,7 @@ void Irc::run()
 						std::string message = this->messages[i].substr(0, pos + 1);
 						this->messages[i].erase(0, pos + 1);
 						std::cout << message << std::endl;
-						this->Parser.parse(*(this->Users[i]), message);
+						this->Parser.parse(*(this->Users[i]), message, *this);
 					}
 				}
 			}

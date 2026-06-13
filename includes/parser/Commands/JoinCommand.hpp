@@ -1,0 +1,21 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   JoinCommand.hpp                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2026/06/13 20:04:54 by ldesboui          #+#    #+#             */
+/*   Updated: 2026/06/13 20:05:49 by ldesboui         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#pragma once
+#include "../ACommand.hpp"
+
+class JoinCommand : public ACommand
+{
+    public:
+        JoinCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+        void exec();
+};
