@@ -1,6 +1,15 @@
 #include <cstdlib>
 #include <iostream>
-#include "includes/includes.hpp"
+#include "Irc.hpp"
+#include "User.hpp"
+#include <sys/socket.h>
+#include <netinet/in.h>
+#include <vector>
+#include "Dm.hpp"
+#include "Channel.hpp"
+#include <arpa/inet.h>
+#include <cstring>
+#include <poll.h>
 #include <csignal>
 
 bool g_isrunning;

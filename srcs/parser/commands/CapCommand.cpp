@@ -14,11 +14,12 @@
 
 CapCommand::CapCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc)
 {
-
 }
 
 void CapCommand::exec()
 {
-
+    // we dont do anything but it might be a future implementation
+    int a;
+    (void)a;
 }
 

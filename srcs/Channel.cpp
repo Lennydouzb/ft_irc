@@ -1,24 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   JoinCommand.cpp                                    :+:      :+:    :+:   */
+/*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/13 20:06:22 by ldesboui         ###   ########.fr       */
+/*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
+/*   Updated: 2026/06/14 10:11:45 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../../includes/parser/Commands/JoinCommand.hpp"
+#include "Channel.hpp"
 
-JoinCommand::JoinCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc){}
-
-void JoinCommand::exec()
+Channel::TheException::TheException(std::string msg)
 {
-    if (this->myUser.getIsPasswordVerified())
-    {
-        
-    }
+	this->message = msg;
+}
+const char *Channel::TheException::what() const throw()
+{
+	return this->message.c_str();
+}
+Channel::TheException::~TheException() throw() {}
+
+
+Channel::Channel(User& theOperator)
+{
+
+}
+
+Channel::~Channel()
+{
+
+}
+
+void Channel::sendMessage(User &sender, std::string message)
+{
+
 }
 

@@ -11,13 +11,21 @@
 /* ************************************************************************** */
 #pragma once
 #include <vector>
+#include <string>
 #include "User.hpp"
 
 class Channel 
 {
 	private:
-		std::vector<User*> operators;
-		std::vector<User*> users;
+		std::vector<User&>	operators;
+		std::vector<User&>	users;
+		std::string			name;
+		std::string			topic;
+		bool				isInviteOnly;
+		size_t				userLimit;
+		bool				restrictedTopic;
+		std::string			password;
+
 	public:
 		class TheException: public std::exception
 		{
@@ -30,5 +38,23 @@ class Channel
 		};
 	Channel(User& theOperator);
 	~Channel();
-	void sendMessage(User &sender, std::string message);
+	void	addUser(User &anUser);
+	void	removeUser(User &anUser);
+	void	setPassword(std::string passwd);
+	void	setRestrictedTopic(bool val);
+	void	setName(const std::string &name);
+	void	setTopic(const std::string &topic);
+	void	setInviteOnly(bool val);
+	void	setUserLimit(size_t limit);
+	
+	std::vector<User&>&	getOperators();
+	std::vector<User&>&	getUsers();
+	const std::string&	getName() const;
+	const std::string&	getTopic() const;
+	bool			isInviteOnly() const;
+	size_t			getUserLimit() const;
+	bool			isRestrictedTopic() const;
+	const std::string&	getPassword() const;
+
+	void	sendMessage(User &sender, std::string message);
 };

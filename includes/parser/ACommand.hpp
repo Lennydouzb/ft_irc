@@ -1,8 +1,9 @@
 #pragma once
 #include <string>
 #include <vector>
-#include "../User.hpp"
-#include "../Irc.hpp"
+
+class Irc;
+class User;
 
 class ACommand
 {
