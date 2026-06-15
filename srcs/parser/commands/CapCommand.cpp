@@ -11,6 +11,8 @@
 /* ************************************************************************** */
 
 #include "../../../includes/parser/Commands/CapCommand.hpp"
+#include "../../../includes/Irc.hpp"
+#include "../../../includes/User.hpp"
 
 CapCommand::CapCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc)
 {

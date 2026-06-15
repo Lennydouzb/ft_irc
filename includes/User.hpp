@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/09 14:15:22 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 14:04:40 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -21,6 +21,7 @@ class User
 	private:
 		std::string 	nickname;
 		std::string 	username;
+		std::string		realname;
 		int				socket;
 		bool 			isPasswordVerified;
 		struct pollfd	pollfd;
@@ -47,4 +48,6 @@ class User
 		void setNickname(std::string nickname);
 		void setUsername(std::string username);
 		void verifyPassword();
+		std::string getRealname();
+		void		setRealname(std::string realname);
 };

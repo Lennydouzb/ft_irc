@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/08 14:08:50 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 14:06:12 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ User::User(int fd, std::string nickname, std::string username)
 	this->nickname = nickname;
 	this->username = username;
 	this->socket = fd;
+	this->realname = "";
 	this->isPasswordVerified = false;
 }
 
@@ -74,4 +75,14 @@ void User::setNickname(std::string nickname)
 void User::setUsername(std::string username)
 {
 	this->username = username;
+}
+
+std::string User::getRealname()
+{
+	return this->realname;
+}
+
+void		User::setRealname(std::string realname)
+{
+	this->realname = realname;
 }

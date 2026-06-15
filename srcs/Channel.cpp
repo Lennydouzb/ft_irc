@@ -6,11 +6,11 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/14 10:11:45 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 13:06:33 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Channel.hpp"
+#include "../includes/Channel.hpp"
 
 Channel::TheException::TheException(std::string msg)
 {

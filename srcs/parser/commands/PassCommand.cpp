@@ -6,12 +6,13 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:32 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/13 20:06:52 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 13:14:03 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/parser/Commands/PassCommand.hpp"
-
+#include "../../../includes/Irc.hpp"
+#include "../../../includes/User.hpp"
 PassCommand::PassCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc)
 {
 
@@ -19,6 +20,14 @@ PassCommand::PassCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 
 void PassCommand::exec()
 {
+    if (!myUser.getIsPasswordVerified())
+    {
+        if (myIrc.verifiyPass(this->myArgs[0]))
+		{
+            myUser.verifyPassword();
+			myIrc.addUser(myUser);
+		}
 
+    }
 }
 

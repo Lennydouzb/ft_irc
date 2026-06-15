@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:37:07 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/09 14:26:36 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 13:08:07 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -17,8 +17,8 @@
 class Channel 
 {
 	private:
-		std::vector<User&>	operators;
-		std::vector<User&>	users;
+		std::vector<User*>	operators;
+		std::vector<User*>	users;
 		std::string			name;
 		std::string			topic;
 		bool				isInviteOnly;
@@ -51,7 +51,7 @@ class Channel
 	std::vector<User&>&	getUsers();
 	const std::string&	getName() const;
 	const std::string&	getTopic() const;
-	bool			isInviteOnly() const;
+	bool			getIsInviteOnly() const;
 	size_t			getUserLimit() const;
 	bool			isRestrictedTopic() const;
 	const std::string&	getPassword() const;

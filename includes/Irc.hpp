@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/12 17:46:52 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 13:12:19 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -22,6 +22,7 @@
 #include <fcntl.h>
 #include "../includes/parser/Parser.hpp"
 #include "../includes/User.hpp"
+#include "Channel.hpp"
 
 class Irc
 {
@@ -29,14 +30,10 @@ class Irc
 		std::string 	password;
 		u_int16_t		port;
 		int				sockfd;
-		//	std::vector<Channel>		openedChannel;
-		//std::vector<Dm>			openedDm;
+		std::vector<Channel>		openedChannel;
 		std::vector<User*>			Users;
 		std::vector<std::string>	messages;
 		Parser						Parser;
-		//void	handleMessage(User &aUser, std::string message);
-		//void	handleDisconnection(User &aUser);
-
 	public:
 		class TheException: public std::exception
 		{
@@ -51,5 +48,8 @@ class Irc
 		Irc(u_int16_t port, std::string password);
 		~Irc();
 		void	run();
+		bool	verifiyPass(std::string passwd);
+		void	addUser(User& anUser);
+		bool	checkExistingNick(std::string nick);
 };
 

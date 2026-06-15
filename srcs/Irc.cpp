@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/12 17:46:43 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 13:27:11 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,19 @@ void Irc::run()
 	}
 }
 
+bool	Irc::verifiyPass(std::string passwd)
+{
+	if (passwd == this->password)
+		return true;
+	return false;
+}
+
+void Irc::addUser(User &anUser)
+{
+	if (anUser.getIsPasswordVerified())
+		this->Users.push_back(&anUser);
+}
+
 Irc::TheException::TheException(std::string msg)
 {
 	this->message = msg;
@@ -146,4 +159,15 @@ const char *Irc::TheException::what() const throw()
 {
 	return this->message.c_str();
 }
+
+bool	Irc::checkExistingNick(std::string nick)
+{
+	for (std::vector<User*>::iterator it = Users.begin(); it != Users.end(); ++it)
+	{
+		if ((*it)->getNickname() == nick)
+			return true;
+	}
+	return false;
+}
+
 Irc::TheException::~TheException() throw() {}

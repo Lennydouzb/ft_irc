@@ -14,6 +14,7 @@
 #include "Commands/TopicCommand.hpp"
 #include "Commands/UserCommand.hpp"
 #include "Commands/PrivmsgCommand.hpp"
+#include "Commands/KickCommand.hpp"
 
 
 class Parser

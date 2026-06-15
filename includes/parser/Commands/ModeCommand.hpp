@@ -5,13 +5,16 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/06/13 20:04:56 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/13 20:05:54 by ldesboui         ###   ########.fr       */
+/*   Created: 2026/06/15 13:38:19 by ldesboui          #+#    #+#             */
+/*   Updated: 2026/06/15 13:38:24 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include "../ACommand.hpp"
+#include "../../Irc.hpp"
+#include "../../User.hpp"
+
 class ModeCommand : public ACommand
 {
     public:

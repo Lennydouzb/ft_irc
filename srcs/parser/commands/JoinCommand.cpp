@@ -18,7 +18,7 @@ void JoinCommand::exec()
 {
     if (this->myUser.getIsPasswordVerified())
     {
-        
+    
     }
 }
 
