@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:27:11 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 20:45:47 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,6 +138,14 @@ void Irc::run()
 	}
 }
 
+void	Irc::sendMessage(User &sender, User& receiver, std::string message)
+{
+	//checkifuser is in channel
+}
+void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
+{
+
+}
 bool	Irc::verifiyPass(std::string passwd)
 {
 	if (passwd == this->password)

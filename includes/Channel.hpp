@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:37:07 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:08:07 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 20:41:32 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -56,5 +56,4 @@ class Channel
 	bool			isRestrictedTopic() const;
 	const std::string&	getPassword() const;
 
-	void	sendMessage(User &sender, std::string message);
 };

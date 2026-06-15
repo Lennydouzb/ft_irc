@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:35 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/13 20:07:06 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 20:42:34 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,24 @@ PrivmsgCommand::PrivmsgCommand(std::vector<std::string> args, User& anUser, Irc&
 
 void PrivmsgCommand::exec()
 {
-
+	if (myUser.getIsPasswordVerified())
+	{
+		if (*(myArgs[0].begin()) == '#')
+		{
+			if (myIrc.channelExist(myArgs[0]))
+			{
+				Channel& myChannel = myIrc.getChannel(myArgs[0]);
+				myIrc.sendMessage(myUser, myChannel, myArgs[1]);
+			}
+		}
+		else
+		{
+			if (myIrc.checkExistingNick(myArgs[0]))
+			{
+				User& receiver = myIrc.getUser(myArgs[0]);
+				myIrc.sendMessage(myUser, receiver, myArgs[1]);
+			}
+		}
+	}
 }
 

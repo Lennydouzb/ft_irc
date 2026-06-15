@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:06:33 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 20:41:45 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,5 @@ Channel::~Channel()
 
 }
 
-void Channel::sendMessage(User &sender, std::string message)
-{
 
-}
 

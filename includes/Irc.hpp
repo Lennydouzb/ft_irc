@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:12:19 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/15 20:41:39 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -51,5 +51,10 @@ class Irc
 		bool	verifiyPass(std::string passwd);
 		void	addUser(User& anUser);
 		bool	checkExistingNick(std::string nick);
+		bool	channelExist(std::string name);
+		User&		getUser(std::string nick);
+		Channel&	getChannel(std::string);
+		void	sendMessage(User &sender, User& receiver, std::string message);
+		void	sendMessage(User &sender, Channel& receiver, std::string message);
 };
 
