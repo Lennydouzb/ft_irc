@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:32 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:14:03 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/16 14:13:27 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,6 @@ void PassCommand::exec()
             myUser.verifyPassword();
 			myIrc.addUser(myUser);
 		}
-
     }
 }
 

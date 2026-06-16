@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 20:41:45 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/16 17:32:17 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,15 +23,48 @@ const char *Channel::TheException::what() const throw()
 Channel::TheException::~TheException() throw() {}
 
 
-Channel::Channel(User& theOperator)
+Channel::Channel(User& theOperator, std::string name)
 {
-
+	this->operators.push_back(&theOperator);
+	this->users.push_back(&theOperator);
+	this->name = name;
 }
 
-Channel::~Channel()
-{
+Channel::~Channel(){}
 
+bool	Channel::checkPassword(std::string passwd)
+{
+	if (passwd == this->password)
+		return true;
+	return false;
 }
 
+bool	Channel::isUserIn(User& anUser)
+{
+	for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+	{
+		if ((*it)->getNickname() == anUser.getNickname())
+			return true;
+	}
+	return false;
+}
 
+bool	Channel::isUserOp(User& anUser)
+{
+	for (std::vector<User*>::iterator it = operators.begin(); it != operators.end(); ++it)
+	{
+		if ((*it)->getNickname() == anUser.getNickname())
+			return true;
+	}
+	return false;
+}
 
+bool	Channel::isUserInvited(User& anUser)
+{
+	for (std::vector<User*>::iterator it = invited.begin(); it != invited.end(); ++it)
+	{
+		if ((*it)->getNickname() == anUser.getNickname())
+			return true;
+	}
+	return false;
+}

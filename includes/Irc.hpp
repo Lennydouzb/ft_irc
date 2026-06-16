@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 20:41:39 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/16 17:23:07 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -30,7 +30,7 @@ class Irc
 		std::string 	password;
 		u_int16_t		port;
 		int				sockfd;
-		std::vector<Channel>		openedChannel;
+		std::vector<Channel*>		openedChannel;
 		std::vector<User*>			Users;
 		std::vector<std::string>	messages;
 		Parser						Parser;
@@ -50,11 +50,14 @@ class Irc
 		void	run();
 		bool	verifiyPass(std::string passwd);
 		void	addUser(User& anUser);
+		void	addChannel(Channel& aChannel);
 		bool	checkExistingNick(std::string nick);
 		bool	channelExist(std::string name);
 		User&		getUser(std::string nick);
 		Channel&	getChannel(std::string);
+		std::vector<Channel*> getChannels();
 		void	sendMessage(User &sender, User& receiver, std::string message);
 		void	sendMessage(User &sender, Channel& receiver, std::string message);
+		void	sendMessage(User& receiver, std::string message);
 };
 

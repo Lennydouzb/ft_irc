@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:37:07 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 20:41:32 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/16 17:25:10 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -19,6 +19,7 @@ class Channel
 	private:
 		std::vector<User*>	operators;
 		std::vector<User*>	users;
+		std::vector<User*>	invited;
 		std::string			name;
 		std::string			topic;
 		bool				isInviteOnly;
@@ -36,16 +37,17 @@ class Channel
 			TheException(std::string message);
 			const char *what() const throw(); 
 		};
-	Channel(User& theOperator);
+	Channel(User& theOperator, std::string name);
 	~Channel();
 	void	addUser(User &anUser);
-	void	removeUser(User &anUser);
+	void	removeUser(User &anUser, std::string reason);
 	void	setPassword(std::string passwd);
 	void	setRestrictedTopic(bool val);
 	void	setName(const std::string &name);
 	void	setTopic(const std::string &topic);
 	void	setInviteOnly(bool val);
 	void	setUserLimit(size_t limit);
+	bool	checkPassword(std::string passwd);
 	
 	std::vector<User&>&	getOperators();
 	std::vector<User&>&	getUsers();
@@ -54,6 +56,8 @@ class Channel
 	bool			getIsInviteOnly() const;
 	size_t			getUserLimit() const;
 	bool			isRestrictedTopic() const;
-	const std::string&	getPassword() const;
+	bool			isUserIn(User& anUser);
+	bool			isUserOp(User& anUser);
+	bool			isUserInvited(User& anUser);
 
 };
