@@ -26,27 +26,36 @@ void JoinCommand::exec()
 		if (myIrc.channelExist(myArgs[0]))
 		{
 			Channel& myChannel = myIrc.getChannel(myArgs[0]);
-			if (myChannel.getIsInviteOnly())
+			if (myChannel.getIsInviteOnly() && !myChannel.isUserInvited(myUser))
 			{
-				if (myChannel.isUserInvited(myUser))
-				{
-					std::string passwd;
-					if (myArgs.size() == 2)
-						passwd = myArgs[1];
-					else
-						passwd = "";
-					if (myChannel.checkPassword(passwd))
-					{
-						std::string joinMsg = ":"+myUser.getNickname()+"!"+myUser.getUsername()+"@127.0.0.1 JOIN "+ myChannel.getName() +"\r\n";
-						myChannel.addUser(myUser);
-						std::vector<User*>& users = myChannel.getUsers();
-						for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
-						{
-							send((*it)->getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
-						}
-					}
-				}
+				return;
 			}
+			std::string passwd;
+			if (myArgs.size() == 2)
+				passwd = myArgs[1];
+			else
+				passwd = "";
+			if (!myChannel.checkPassword(passwd))
+			{
+				return ;
+			}
+			std::string joinMsg = ":"+myUser.getNickname()+"!"+myUser.getUsername()+"@127.0.0.1 JOIN :"+ myChannel.getName() +"\r\n";
+			myChannel.addUser(myUser);
+			std::vector<User*>& users = myChannel.getUsers();
+			for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+			{
+				send((*it)->getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
+			}
+			std::string nameList = "";
+			for (size_t i = 0; i < users.size(); ++i)
+			{
+				if (myChannel.isUserOp(*(users[i]))) 
+					nameList += "@";
+					
+				nameList += users[i]->getNickname() + " ";
+			}
+			myIrc.sendMessage(myUser, "353 " + myUser.getNickname() + " = " + myChannel.getName() + " :" + nameList);
+			myIrc.sendMessage(myUser, "366 " + myUser.getNickname() + " " + myChannel.getName() + " :End of /NAMES list.");
 		}
 		else
 		{

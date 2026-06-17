@@ -168,7 +168,24 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 	{
 		if (*it != &sender)
 		{
-			sendMessage(sender, **it, message);
+			std::string prefix = ":" + sender.getNickname() + "!" + sender.getUsername() + "@127.0.0.1 ";
+			if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
+			{
+				message += "\r\n";
+			}
+			std::string entireMsg = prefix + "PRIVMSG " + receiver.getName() + " :" + message;
+			ssize_t bytesRead = 0;
+			while (!entireMsg.empty() && bytesRead != -1)
+			{
+				bytesRead = send((**it).getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+				if (bytesRead > 0)
+					entireMsg.erase(0, bytesRead);
+			}
+			if (bytesRead == -1)
+			{
+				// error
+				(void)bytesRead;
+			}
 		}
 	}
 }
