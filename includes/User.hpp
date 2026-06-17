@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 14:04:40 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:34:50 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -39,15 +39,17 @@ class User
 
 		User(int fd, std::string nickname, std::string username);
 		~User();
-		void setpollfd(struct pollfd pollfd);
-		struct pollfd getpollfd();
-		int getSocket();
-		std::string getNickname();
-		std::string getUsername();
-		bool getIsPasswordVerified();
-		void setNickname(std::string nickname);
-		void setUsername(std::string username);
-		void verifyPassword();
-		std::string getRealname();
-		void		setRealname(std::string realname);
+		void			setpollfd(struct pollfd pollfd);
+		struct pollfd	getpollfd();
+		int				getSocket();
+		std::string		getNickname();
+		std::string		getUsername();
+		bool			getIsPasswordVerified();
+		bool			isUserReady();
+		void			setNickname(std::string nickname);
+		void			setUsername(std::string username);
+		void			verifyPassword();
+		std::string		getRealname();
+		void			setRealname(std::string realname);
+
 };

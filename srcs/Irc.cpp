@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 17:23:39 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:49:50 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,19 +140,63 @@ void Irc::run()
 
 void	Irc::sendMessage(User &sender, User& receiver, std::string message)
 {
-	//checkifuser is in channel
+	//user to user
+	std::string prefix = ":" + sender.getNickname() + "!" + sender.getUsername() + "@127.0.0.1 ";
+	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
+    {
+        message += "\r\n";
+    }
+	std::string entireMsg = prefix + "PRIVMSG " + receiver.getNickname() + " :" + message;
+	ssize_t bytesRead = 0;
+	while (!entireMsg.empty() && bytesRead != -1)
+	{
+		bytesRead = send(receiver.getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+		if (bytesRead > 0)
+			entireMsg.erase(0, bytesRead);
+	}
+	if (bytesRead == -1)
+	{
+		// error
+		(void)bytesRead;
+	}
 }
 void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 {
-
+	//user to channel
+	std::vector<User*>& users = receiver.getUsers();
+	for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+	{
+		if (*it != &sender)
+		{
+			sendMessage(sender, **it, message);
+		}
+	}
 }
 
-void	sendMessage(User& receiver, std::string message)
+void	Irc::sendMessage(User& receiver, std::string message)
 {
-	
+	//server to user
+	std::string prefix = ":ft_irc ";
+	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
+    {
+        message += "\r\n";
+    }
+	std::string entireMsg = prefix + message;
+	ssize_t bytesRead = 0;
+	while (!entireMsg.empty() && bytesRead != -1)
+	{
+		bytesRead = send(receiver.getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+		if (bytesRead > 0)
+			entireMsg.erase(0, bytesRead);
+	}
+	if (bytesRead == -1)
+	{
+		// error
+		(void)bytesRead;
+	}
 }
 
-std::vector<Channel*> Irc::getChannels()
+std::vector<Channel*>& Irc::getChannels()
 {
 	return this->openedChannel;
 }
@@ -192,6 +236,36 @@ bool	Irc::checkExistingNick(std::string nick)
 			return true;
 	}
 	return false;
+}
+
+bool	Irc::channelExist(std::string name)
+{
+	for (std::vector<Channel*>::iterator it = openedChannel.begin(); it != openedChannel.end(); ++it)
+	{
+		if (*it && (*it)->getName() == name)
+			return true;
+	}
+	return false;
+}
+
+User&		Irc::getUser(std::string nick)
+{
+	for (std::vector<User*>::iterator it = Users.begin(); it != Users.end(); ++it)
+	{
+		if ((*it) && (*it)->getNickname() == nick)
+			return *(*it);
+	}
+	throw Irc::TheException("User not found");
+}
+
+Channel&	Irc::getChannel(std::string name)
+{
+	for (std::vector<Channel*>::iterator it = openedChannel.begin(); it != openedChannel.end(); ++it)
+	{
+		if ((*it) && (*it)->getName() == name)
+			return *(*it);
+	}
+	throw Irc::TheException("Channel not found");
 }
 
 Irc::TheException::~TheException() throw() {}

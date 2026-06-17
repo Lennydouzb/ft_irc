@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 14:06:12 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:38:05 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,4 +85,11 @@ std::string User::getRealname()
 void		User::setRealname(std::string realname)
 {
 	this->realname = realname;
+}
+
+bool	User::isUserReady()
+{
+	if (getIsPasswordVerified() && !nickname.empty() && !username.empty() && !realname.empty())
+		return true;
+	return false;
 }

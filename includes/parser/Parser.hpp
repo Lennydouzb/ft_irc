@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:09:22 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 14:09:24 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:34:04 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,10 @@
 
 class Parser
 {
-    private:
-
-
     public:
         ~Parser();
         Parser();
-        static void parse(User& user, std::string message, Irc& anIrc);
-        static ACommand* getInstance(std::string command, std::vector<std::string> args);
+        void parse(User& user, std::string message, Irc& anIrc);
+		ACommand*	getInstance(std::string command, std::vector<std::string> args, User& anUser, Irc& anIrc);
 };
 std::vector<std::string> split(std::string message);

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 17:23:07 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:47:09 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -20,8 +20,9 @@
 #include <cstring>
 #include <unistd.h>
 #include <fcntl.h>
-#include "../includes/parser/Parser.hpp"
-#include "../includes/User.hpp"
+#include "parser/Parser.hpp"
+#include "User.hpp"
+#include "parser/ACommand.hpp"
 #include "Channel.hpp"
 
 class Irc
@@ -55,7 +56,7 @@ class Irc
 		bool	channelExist(std::string name);
 		User&		getUser(std::string nick);
 		Channel&	getChannel(std::string);
-		std::vector<Channel*> getChannels();
+		std::vector<Channel*>& getChannels();
 		void	sendMessage(User &sender, User& receiver, std::string message);
 		void	sendMessage(User &sender, Channel& receiver, std::string message);
 		void	sendMessage(User& receiver, std::string message);

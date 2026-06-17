@@ -6,11 +6,14 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:35 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 20:42:34 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:48:50 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/parser/Commands/PrivmsgCommand.hpp"
+#include "../../../includes/User.hpp"
+#include "../../../includes/Irc.hpp"
+#include "../../../includes/Channel.hpp"
 
 PrivmsgCommand::PrivmsgCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc)
 {
@@ -19,7 +22,7 @@ PrivmsgCommand::PrivmsgCommand(std::vector<std::string> args, User& anUser, Irc&
 
 void PrivmsgCommand::exec()
 {
-	if (myUser.getIsPasswordVerified())
+	if (myUser.isUserReady())
 	{
 		if (*(myArgs[0].begin()) == '#')
 		{

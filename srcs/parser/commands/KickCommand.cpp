@@ -6,35 +6,40 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:30:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 17:05:59 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:47:58 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../../includes/parser/Commands/KickCommand.hpp"
+#include "../../../includes/Irc.hpp"
+#include "../../../includes/User.hpp"
+#include "../../../includes/Channel.hpp"
 
 KickCommand::KickCommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : ACommand(args, anUser, anIrc){}
 
 void KickCommand::exec()
 {
-    if (this->myUser.getIsPasswordVerified())
+    if (this->myUser.isUserReady())
     {
-        if (myIrc.channelExist(myArgs[0]))
-        {
-            Channel& myChannel = myIrc.getChannel(myArgs[0]);
-			if (myChannel.isUserOp(myUser))
+		if (myArgs.size() >= 2)
+		{
+			if (myIrc.channelExist(myArgs[0]))
 			{
-				if(myIrc.checkExistingNick(myArgs[1]))
+				Channel& myChannel = myIrc.getChannel(myArgs[0]);
+				if (myChannel.isUserOp(myUser))
 				{
-					User &anUser = myIrc.getUser(myArgs[1]);
-					if (myChannel.isUserOp(myUser))
+					if(myIrc.checkExistingNick(myArgs[1]))
 					{
+						User &anUser = myIrc.getUser(myArgs[1]);
 						std::string reason = "";
-						if (!myArgs[3].empty())
-							reason = myArgs[3];
-						myChannel.removeUser(anUser, reason);
+						if (myArgs.size() > 2 && !myArgs[2].empty())
+							reason = myArgs[2]; 
+						myChannel.removeUser(anUser);
+						myIrc.sendMessage(myUser, anUser, reason);
 					}
 				}
+
 			}
-        }
+		}
     }
 }

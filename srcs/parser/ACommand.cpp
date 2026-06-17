@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:25:43 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 14:25:44 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:50:07 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,5 +16,3 @@ ACommand::ACommand(std::vector<std::string> args, User& anUser, Irc& anIrc) : my
 {
     this->myArgs = args;
 }
-
-void exec(std::vector<std::string> params);

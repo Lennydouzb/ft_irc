@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:26:33 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 14:26:34 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:42:37 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,11 +16,11 @@ Parser::Parser(){}
 
 Parser::~Parser(){}
 
-ACommand* Parser::getInstance(std::string command, std::vector<std::string> args);
+ACommand* Parser::getInstance(std::string command, std::vector<std::string> args, User& anUser, Irc& anIrc)
 {
-    std::string commands[10] = {"NICK","PASS","JOIN","CAP","QUIT","USER","PING","PRIVMSG","TOPIC","MODE", "KICK"};
+    std::string commands[11] = {"NICK","PASS","JOIN","CAP","QUIT","USER","PING","PRIVMSG","TOPIC","MODE", "KICK"};
     int aCommand = 0;
-    while (aCommand < 10)
+    while (aCommand < 11)
     {
         if (commands[aCommand] == command)
             break;
@@ -29,37 +29,37 @@ ACommand* Parser::getInstance(std::string command, std::vector<std::string> args
     switch (aCommand)
     {
         case (0):
-            return new NickCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new NickCommand(args, anUser, anIrc);
             break;
         case (1):
-            return new PassCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new PassCommand(args, anUser, anIrc);
             break;
         case (2):
-            return new JoinCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new JoinCommand(args, anUser, anIrc);
             break;
         case (3):
-            return new CapCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new CapCommand(args, anUser, anIrc);
             break;
         case (4):
-            return new QuitCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new QuitCommand(args, anUser, anIrc);
             break;
         case (5):
-            return new UserCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new UserCommand(args, anUser, anIrc);
             break;
         case (6):
-            return new PingCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new PingCommand(args, anUser, anIrc);
             break;
         case (7):
-            return new PrivmsgCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new PrivmsgCommand(args, anUser, anIrc);
             break;
         case (8):
-            return new TopicCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new TopicCommand(args, anUser, anIrc);
             break;
         case (9):
-            return new ModeCommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+            return new ModeCommand(args, anUser, anIrc);
             break;
         case (10):
-            return new KickCommand(std::vector<std::string> args, User& anUser, Irc& anIrc)
+            return new KickCommand(args, anUser, anIrc);
         default:
             return NULL;
     }
@@ -70,8 +70,11 @@ void Parser::parse(User &user, std::string arg, Irc &anIrc)
     std::vector<std::string> args = split(arg);
     std::string command = args[0];
     args.erase(args.begin());
-    ACommand *myCommand = Parser::getInstance(command, args);
-    
+    ACommand *myCommand = this->getInstance(command, args, user, anIrc);
+	if (myCommand)
+	{
+		myCommand->exec();
+	}
 }
 std::vector<std::string> split(std::string message)
 {

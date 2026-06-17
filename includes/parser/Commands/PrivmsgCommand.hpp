@@ -6,14 +6,12 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/15 13:38:52 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 13:38:55 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:46:36 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 #include "../ACommand.hpp"
-#include "../../Irc.hpp"
-#include "../../User.hpp"
 
 class PrivmsgCommand : public ACommand
 {

@@ -1,11 +1,12 @@
 #include <cstdlib>
 #include <iostream>
 #include "includes/Irc.hpp"
-#include "User.hpp"
+#include "includes/User.hpp"
+#include "includes/Channel.hpp"
+
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <vector>
-#include "Channel.hpp"
 #include <arpa/inet.h>
 #include <cstring>
 #include <poll.h>

@@ -40,7 +40,7 @@ class Channel
 	Channel(User& theOperator, std::string name);
 	~Channel();
 	void	addUser(User &anUser);
-	void	removeUser(User &anUser, std::string reason);
+	void	removeUser(User &anUser);
 	void	setPassword(std::string passwd);
 	void	setRestrictedTopic(bool val);
 	void	setName(const std::string &name);
@@ -49,8 +49,8 @@ class Channel
 	void	setUserLimit(size_t limit);
 	bool	checkPassword(std::string passwd);
 	
-	std::vector<User&>&	getOperators();
-	std::vector<User&>&	getUsers();
+	std::vector<User*>&	getOperators();
+	std::vector<User*>&	getUsers();
 	const std::string&	getName() const;
 	const std::string&	getTopic() const;
 	bool			getIsInviteOnly() const;

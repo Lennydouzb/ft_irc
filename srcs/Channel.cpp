@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 17:32:17 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/17 10:04:55 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,93 @@ bool	Channel::isUserInvited(User& anUser)
 			return true;
 	}
 	return false;
+}
+
+void	Channel::addUser(User &anUser)
+{
+	this->users.push_back(&anUser);
+}
+void	Channel::removeUser(User &anUser)
+{
+	for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+	{
+		if ((*it)->getNickname() == anUser.getNickname())
+		{
+			users.erase(it);
+			break;
+		}
+	}
+	for (std::vector<User*>::iterator it = operators.begin(); it != operators.end(); ++it)
+	{
+		if ((*it)->getNickname() == anUser.getNickname())
+		{
+			operators.erase(it);
+			break;
+		}
+	}
+}
+
+void	Channel::setPassword(std::string passwd)
+{
+	this->password = passwd;
+}
+
+void	Channel::setRestrictedTopic(bool val)
+{
+	this->restrictedTopic = val;
+}
+
+void	Channel::setName(const std::string &name)
+{
+	this->name = name;
+}
+
+void	Channel::setTopic(const std::string &topic)
+{
+	this->topic = topic;
+}
+
+void	Channel::setInviteOnly(bool val)
+{
+	this->isInviteOnly = val;
+}
+
+void	Channel::setUserLimit(size_t limit)
+{
+	this->userLimit = limit;
+}
+
+std::vector<User*>&	Channel::getOperators()
+{
+	return this->operators;
+}
+
+std::vector<User*>&	Channel::getUsers()
+{
+	return this->users;
+}
+
+const std::string&	Channel::getName() const
+{
+	return this->name;
+}
+
+const std::string&	Channel::getTopic() const
+{
+	return this->topic;
+}
+
+bool	Channel::getIsInviteOnly() const
+{
+	return this->isInviteOnly;
+}
+
+size_t	Channel::getUserLimit() const
+{
+	return this->userLimit;
+}
+
+bool	Channel::isRestrictedTopic() const
+{
+	return this->restrictedTopic;
 }
