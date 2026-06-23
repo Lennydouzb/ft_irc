@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 13:18:05 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/23 19:10:32 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void JoinCommand::exec()
 			{
 				return ;
 			}
-			std::string joinMsg = ":"+myUser.getNickname()+"!"+myUser.getUsername()+"@127.0.0.1 JOIN :"+ myChannel.getName() +"\r\n";
+			std::string joinMsg = myUser.getPrefix() + "JOIN :"+ myChannel.getName() +"\r\n";
 			myChannel.addUser(myUser);
 			std::vector<User*>& users = myChannel.getUsers();
 			for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
@@ -59,9 +59,10 @@ void JoinCommand::exec()
 		}
 		else
 		{
-			Channel* aChannel = new Channel(myUser, myArgs[0]); 
+			std::string name = myArgs[0].substr(1, myArgs[0].length());
+			Channel* aChannel = new Channel(myUser, name); 
 			myIrc.addChannel(*aChannel);
-			std::string joinMsg = ":" + myUser.getNickname() + "!" + myUser.getUsername() + "@127.0.0.1 JOIN :" + myArgs[0] + "\r\n";
+			std::string joinMsg = myUser.getPrefix() + "JOIN :" + name + "\r\n";
   			send(myUser.getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
 			std::string namreply = "353 " + myUser.getNickname() + " = " + myArgs[0] + " :@" + myUser.getNickname();
 			myIrc.sendMessage(myUser, namreply);

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:34:50 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/23 18:23:17 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -35,7 +35,7 @@ class User
 				~TheException() throw();
 				TheException(std::string message);
 				const char *what() const throw(); 
-	};
+		};
 
 		User(int fd, std::string nickname, std::string username);
 		~User();
@@ -51,5 +51,5 @@ class User
 		void			verifyPassword();
 		std::string		getRealname();
 		void			setRealname(std::string realname);
-
+		std::string		getPrefix() const;
 };

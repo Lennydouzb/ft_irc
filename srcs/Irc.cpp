@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:49:50 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/23 18:25:33 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,17 +141,16 @@ void Irc::run()
 void	Irc::sendMessage(User &sender, User& receiver, std::string message)
 {
 	//user to user
-	std::string prefix = ":" + sender.getNickname() + "!" + sender.getUsername() + "@127.0.0.1 ";
 	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
     {
         message += "\r\n";
     }
 	ssize_t bytesRead = 0;
-	while (!entireMsg.empty() && bytesRead != -1)
+	while (!message.empty() && bytesRead != -1)
 	{
-		bytesRead = send(receiver.getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+		bytesRead = send(receiver.getSocket(), message.c_str(), message.length(), 0);
 		if (bytesRead > 0)
-			entireMsg.erase(0, bytesRead);
+			message.erase(0, bytesRead);
 	}
 	if (bytesRead == -1)
 	{
@@ -167,13 +166,12 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 	{
 		if (*it != &sender)
 		{
-			std::string prefix = ":" + sender.getNickname() + "!" + sender.getUsername() + "@127.0.0.1 ";
 			if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
 			{
 				message += "\r\n";
 			}
 			ssize_t bytesRead = 0;
-			while (!entireMsg.empty() && bytesRead != -1)
+			while (!message.empty() && bytesRead != -1)
 			{
 				bytesRead = send((**it).getSocket(), message.c_str(), message.length(), 0);
 				if (bytesRead > 0)
@@ -191,18 +189,16 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 void	Irc::sendMessage(User& receiver, std::string message)
 {
 	//server to user
-	std::string prefix = ":ft_irc ";
 	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
     {
         message += "\r\n";
     }
-	std::string entireMsg = prefix + message;
 	ssize_t bytesRead = 0;
-	while (!entireMsg.empty() && bytesRead != -1)
+	while (!message.empty() && bytesRead != -1)
 	{
-		bytesRead = send(receiver.getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+		bytesRead = send(receiver.getSocket(), message.c_str(), message.length(), 0);
 		if (bytesRead > 0)
-			entireMsg.erase(0, bytesRead);
+			message.erase(0, bytesRead);
 	}
 	if (bytesRead == -1)
 	{
@@ -281,6 +277,11 @@ Channel&	Irc::getChannel(std::string name)
 			return *(*it);
 	}
 	throw Irc::TheException("Channel not found");
+}
+
+std::string	Irc::getPrefix() const
+{
+    return ":ft_irc ";
 }
 
 Irc::TheException::~TheException() throw() {}

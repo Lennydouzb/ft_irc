@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:38:05 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/23 18:24:23 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,4 +92,9 @@ bool	User::isUserReady()
 	if (getIsPasswordVerified() && !nickname.empty() && !username.empty() && !realname.empty())
 		return true;
 	return false;
+}
+
+std::string	User::getPrefix() const
+{
+    return ":" + this->nickname + "!" + this->username + "@127.0.0.1 ";
 }

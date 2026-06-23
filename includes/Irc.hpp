@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:47:09 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/23 18:24:47 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -60,5 +60,6 @@ class Irc
 		void	sendMessage(User &sender, User& receiver, std::string message);
 		void	sendMessage(User &sender, Channel& receiver, std::string message);
 		void	sendMessage(User& receiver, std::string message);
+		std::string	getPrefix() const;
 };
 
