@@ -146,7 +146,6 @@ void	Irc::sendMessage(User &sender, User& receiver, std::string message)
     {
         message += "\r\n";
     }
-	std::string entireMsg = prefix + "PRIVMSG " + receiver.getNickname() + " :" + message;
 	ssize_t bytesRead = 0;
 	while (!entireMsg.empty() && bytesRead != -1)
 	{
@@ -173,13 +172,12 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 			{
 				message += "\r\n";
 			}
-			std::string entireMsg = prefix + "PRIVMSG " + receiver.getName() + " :" + message;
 			ssize_t bytesRead = 0;
 			while (!entireMsg.empty() && bytesRead != -1)
 			{
-				bytesRead = send((**it).getSocket(), entireMsg.c_str(), entireMsg.length(), 0);
+				bytesRead = send((**it).getSocket(), message.c_str(), message.length(), 0);
 				if (bytesRead > 0)
-					entireMsg.erase(0, bytesRead);
+					message.erase(0, bytesRead);
 			}
 			if (bytesRead == -1)
 			{

@@ -24,20 +24,25 @@ void PrivmsgCommand::exec()
 {
 	if (myUser.isUserReady())
 	{
-		if (*(myArgs[0].begin()) == '#')
+		if (myArgs.size() == 2)
 		{
-			if (myIrc.channelExist(myArgs[0]))
+			if (*(myArgs[0].begin()) == '#')
 			{
-				Channel& myChannel = myIrc.getChannel(myArgs[0]);
-				myIrc.sendMessage(myUser, myChannel, myArgs[1]);
+				if (myIrc.channelExist(myArgs[0]))
+				{
+					std::string message = "PRIVMSG #"  + myArgs[0] + " :" + myArgs[1];
+					Channel& myChannel = myIrc.getChannel(myArgs[0]);
+					myIrc.sendMessage(myUser, myChannel, message);
+				}
 			}
-		}
-		else
-		{
-			if (myIrc.checkExistingNick(myArgs[0]))
+			else
 			{
-				User& receiver = myIrc.getUser(myArgs[0]);
-				myIrc.sendMessage(myUser, receiver, myArgs[1]);
+				if (myIrc.checkExistingNick(myArgs[0]))
+				{
+					std::string message = "PRIVMSG "  + myArgs[0] + " :" + myArgs[1];
+					User& receiver = myIrc.getUser(myArgs[0]);
+					myIrc.sendMessage(myUser, receiver, message);
+				}
 			}
 		}
 	}
