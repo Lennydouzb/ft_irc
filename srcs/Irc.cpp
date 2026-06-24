@@ -6,12 +6,14 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/23 18:25:33 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:05:06 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/Irc.hpp"
 #include <netinet/in.h>
+#include <string>
+#include <sys/socket.h>
 
 extern bool g_isrunning;
 Irc::Irc(u_int16_t port, std::string password)
@@ -47,10 +49,10 @@ Irc::Irc(u_int16_t port, std::string password)
 Irc::~Irc()
 {
 	for (size_t i = 0; i < this->Users.size(); ++i) {
-        delete this->Users[i];
-    }
-    this->Users.clear();
-    this->messages.clear();
+		delete this->Users[i];
+	}
+	this->Users.clear();
+	this->messages.clear();
 }
 
 void Irc::run()
@@ -93,13 +95,13 @@ void Irc::run()
 			else
 			{
 				if (fds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
-					{
-						delete this->Users[i];
-						this->Users.erase(this->Users.begin() + i);
-						this->messages.erase(this->messages.begin() + i);
-						i--;
-						continue;
-					}
+				{
+					delete this->Users[i];
+					this->Users.erase(this->Users.begin() + i);
+					this->messages.erase(this->messages.begin() + i);
+					i--;
+					continue;
+				}
 				else if (fds[i].revents & POLLIN)
 				{
 					char buffer[1024];
@@ -119,7 +121,7 @@ void Irc::run()
 						delete this->Users[i];
 						this->Users.erase(this->Users.begin() + i);
 						this->messages.erase(this->messages.begin() + i);
-        				i--;
+						i--;
 						continue;
 					}
 					buffer[bytesRead] = '\0';
@@ -138,13 +140,106 @@ void Irc::run()
 	}
 }
 
-void	Irc::sendMessage(User &sender, User& receiver, std::string message)
+void    Irc::sendError(User* sender, User* receiver, Channel* aChannel, int errType, std::string command)
+{
+    std::string clientName;
+	if (sender->getNickname().empty() )
+		clientName = "*";
+	else
+		clientName = sender->getNickname();
+    std::string srvPrefix = this->getPrefix() + " "; 
+    std::string msg;
+
+    switch (errType) 
+    {
+        case ERR_NOSUCHNICK:
+            msg = srvPrefix + "401 " + clientName + " " + command + " :No such nick/channel";
+            break;
+
+        case ERR_NOSUCHCHANNEL:
+            msg = srvPrefix + "403 " + clientName + " " + command + " :No such channel";
+            break;
+
+        case ERR_CANNOTSENDTOCHAN:
+            msg = srvPrefix + "404 " + clientName + " " + aChannel->getName() + " :Cannot send to channel";
+            break;
+
+        case ERR_NOORIGIN:
+            msg = srvPrefix + "409 " + clientName + " :No origin specified";
+            break;
+
+        case ERR_NORECIPIENT:
+            msg = srvPrefix + "411 " + clientName + " :No recipient given (" + command + ")";
+            break;
+
+        case ERR_NOTEXTTOSEND:
+            msg = srvPrefix + "412 " + clientName + " :No text to send";
+            break;
+
+        case ERR_NONICKNAMEGIVEN:
+            msg = srvPrefix + "431 " + clientName + " :No nickname given";
+            break;
+
+        case ERR_ERRONEUSNICKNAME:
+            msg = srvPrefix + "432 " + clientName + " " + command + " :Erroneous nickname";
+            break;
+
+        case ERR_NICKNAMEINUSE:
+            msg = srvPrefix + "433 " + clientName + " " + command + " :Nickname is already in use";
+            break;
+
+        case ERR_USERNOTINCHANNEL:
+            msg = srvPrefix + "441 " + clientName + " " + command + " " + aChannel->getName() + " :They aren't on that channel";
+            break;
+
+        case ERR_NOTONCHANNEL:
+            msg = srvPrefix + "442 " + clientName + " " + aChannel->getName() + " :You're not on that channel";
+            break;
+
+        case ERR_NEEDMOREPARAMS:
+            msg = srvPrefix + "461 " + clientName + " " + command + " :Not enough parameters";
+            break;
+
+        case ERR_CHANNELISFULL:
+            msg = srvPrefix + "471 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+l)";
+            break;
+
+        case ERR_UNKNOWNMODE:
+            msg = srvPrefix + "472 " + clientName + " " + command + " :is unknown mode char to me for " + aChannel->getName();
+            break;
+
+        case ERR_INVITEONLYCHAN:
+            msg = srvPrefix + "473 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+i)";
+            break;
+
+        case ERR_BADCHANNELKEY:
+            msg = srvPrefix + "475 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+k)";
+            break;
+
+        case ERR_CHANOPRIVSNEEDED:
+            msg = srvPrefix + "482 " + clientName + " " + aChannel->getName() + " :You're not channel operator";
+            break;
+
+        case ERR_UMODEUNKNOWNFLAG:
+            msg = srvPrefix + "501 " + clientName + " :Unknown MODE flag";
+            break;
+
+        case ERR_USERSDONTMATCH:
+            msg = srvPrefix + "502 " + clientName + " :Cannot change mode for other users";
+            break;
+
+        default:
+            return;
+    }
+
+    this->sendMessage(*sender, msg);
+}void	Irc::sendMessage(User &sender, User& receiver, std::string message)
 {
 	//user to user
 	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
-    {
-        message += "\r\n";
-    }
+	{
+		message += "\r\n";
+	}
 	ssize_t bytesRead = 0;
 	while (!message.empty() && bytesRead != -1)
 	{
@@ -190,9 +285,9 @@ void	Irc::sendMessage(User& receiver, std::string message)
 {
 	//server to user
 	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
-    {
-        message += "\r\n";
-    }
+	{
+		message += "\r\n";
+	}
 	ssize_t bytesRead = 0;
 	while (!message.empty() && bytesRead != -1)
 	{
@@ -281,7 +376,7 @@ Channel&	Irc::getChannel(std::string name)
 
 std::string	Irc::getPrefix() const
 {
-    return ":ft_irc ";
+	return ":ft_irc ";
 }
 
 Irc::TheException::~TheException() throw() {}
