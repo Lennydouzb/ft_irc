@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 16:13:03 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:47:32 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ JoinCommand::JoinCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 void JoinCommand::exec()
 {
 	if (myArgs.size() < 1)
+
 	if (this->myUser.isUserReady())
 	{
 		if (myIrc.channelExist(myArgs[0]))

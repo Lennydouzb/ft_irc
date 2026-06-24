@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/23 18:24:23 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:54:20 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,4 +97,14 @@ bool	User::isUserReady()
 std::string	User::getPrefix() const
 {
     return ":" + this->nickname + "!" + this->username + "@127.0.0.1 ";
+}
+
+bool	User::isNickUsable(std::string nick) const
+{
+	for (std::string::iterator it = nick.begin(); it != nick.end(); ++it)
+	{
+		if (*it == ' ' || *it == ':' ||*it == '@' ||*it == '!' ||*it == '#' ||*it == '&' ||*it == '+' ||*it == '*' ||*it == '?' ||*it == ',' ||*it == '\r' ||*it == '\n' ||*it == '\0')
+			return false;
+	}
+	return true;
 }

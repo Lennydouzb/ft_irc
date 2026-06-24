@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 16:22:41 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:44:09 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -26,25 +26,27 @@
 #include "Channel.hpp"
 
 enum e_irc_error {
-    ERR_NOSUCHNICK         = 401,
-    ERR_NOSUCHCHANNEL      = 403,
-    ERR_CANNOTSENDTOCHAN   = 404,
-    ERR_NOORIGIN           = 409,
-    ERR_NORECIPIENT        = 411,
-    ERR_NOTEXTTOSEND       = 412,
-    ERR_NONICKNAMEGIVEN    = 431,
-    ERR_ERRONEUSNICKNAME   = 432,
-    ERR_NICKNAMEINUSE      = 433,
-    ERR_USERNOTINCHANNEL   = 441,
-    ERR_NOTONCHANNEL       = 442,
-    ERR_NEEDMOREPARAMS     = 461,
-    ERR_CHANNELISFULL      = 471,
-    ERR_UNKNOWNMODE        = 472,
-    ERR_INVITEONLYCHAN     = 473,
-    ERR_BADCHANNELKEY      = 475,
-    ERR_CHANOPRIVSNEEDED   = 482,
-    ERR_UMODEUNKNOWNFLAG   = 501,
-    ERR_USERSDONTMATCH     = 502
+    ERR_NOSUCHNICK			= 401,
+    ERR_NOSUCHCHANNEL      	= 403,
+    ERR_CANNOTSENDTOCHAN   	= 404,
+    ERR_NOORIGIN           	= 409,
+    ERR_NORECIPIENT        	= 411,
+    ERR_NOTEXTTOSEND       	= 412,
+    ERR_NONICKNAMEGIVEN    	= 431,
+    ERR_ERRONEUSNICKNAME   	= 432,
+    ERR_NICKNAMEINUSE      	= 433,
+    ERR_USERNOTINCHANNEL   	= 441,
+    ERR_NOTONCHANNEL       	= 442,
+	ERR_NOTREGISTERED		= 451,
+    ERR_NEEDMOREPARAMS		= 461,
+	ERR_ALREADYREGISTERED	= 462,
+    ERR_CHANNELISFULL      	= 471,
+    ERR_UNKNOWNMODE        	= 472,
+    ERR_INVITEONLYCHAN     	= 473,
+    ERR_BADCHANNELKEY      	= 475,
+    ERR_CHANOPRIVSNEEDED   	= 482,
+    ERR_UMODEUNKNOWNFLAG   	= 501,
+    ERR_USERSDONTMATCH     	= 502
 };
 class Irc
 {

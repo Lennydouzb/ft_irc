@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:35 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/23 18:26:06 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:59:37 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,11 @@ void PrivmsgCommand::exec()
 	{
 		if (myArgs.size() == 2)
 		{
+			if (myArgs[1].size() == 1)
+			{
+				myIrc.sendError(&myUser, NULL, NULL, ERR_NOTEXTTOSEND, "");
+				return ;
+			}
 			std::string prefix = myUser.getPrefix();
 			if (*(myArgs[0].begin()) == '#')
 			{
@@ -33,8 +38,13 @@ void PrivmsgCommand::exec()
 				{
 					std::string message = prefix + "PRIVMSG #"  + myArgs[0] + " :" + myArgs[1];
 					Channel& myChannel = myIrc.getChannel(myArgs[0]);
-					myIrc.sendMessage(myUser, myChannel, message);
+					if (myChannel.isUserIn(myUser))
+						myIrc.sendMessage(myUser, myChannel, message);
+					else
+						myIrc.sendError(&myUser, NULL, NULL, ERR_CANNOTSENDTOCHAN, "");
 				}
+				else
+					myIrc.sendError(&myUser, NULL, NULL, ERR_NOSUCHCHANNEL, myArgs[0]);
 			}
 			else
 			{
@@ -44,8 +54,22 @@ void PrivmsgCommand::exec()
 					User& receiver = myIrc.getUser(myArgs[0]);
 					myIrc.sendMessage(myUser, receiver, message);
 				}
+				else
+					myIrc.sendError(&myUser, NULL, NULL, ERR_NOSUCHNICK, myArgs[0]);
+			}
+		}
+		else
+		{
+			if (myArgs.size() == 1)
+			{
+				if (myArgs[0][0] == ':')
+					myIrc.sendError(&myUser, NULL, NULL, ERR_NORECIPIENT, "PRIVMSG");
+				else
+					myIrc.sendError(&myUser, NULL, NULL, ERR_NOTEXTTOSEND, "");
 			}
 		}
 	}
+	else
+		myIrc.sendError(&myUser, NULL, NULL, ERR_NOTREGISTERED, "");
 }
 

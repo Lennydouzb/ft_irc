@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:30:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/23 18:26:49 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:27:09 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void KickCommand::exec()
 				}
 
 			}
+			else
+				myIrc.sendError(&myUser, NULL, NULL, ERR_NOSUCHCHANNEL, "");
 		}
     }
 }

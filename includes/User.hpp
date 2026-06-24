@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/23 18:23:17 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:51:17 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -52,4 +52,5 @@ class User
 		std::string		getRealname();
 		void			setRealname(std::string realname);
 		std::string		getPrefix() const;
+		bool			isNickUsable(std::string nick) const;
 };

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:05:06 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 17:46:18 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -228,6 +228,12 @@ void    Irc::sendError(User* sender, User* receiver, Channel* aChannel, int errT
             msg = srvPrefix + "502 " + clientName + " :Cannot change mode for other users";
             break;
 
+		case ERR_NOTREGISTERED:
+            msg = srvPrefix + "451 " + clientName + " :You have not registered";
+			break;
+		case ERR_ALREADYREGISTERED:
+            msg = srvPrefix + "462 " + clientName + " :You may not reregister";
+			break;
         default:
             return;
     }
