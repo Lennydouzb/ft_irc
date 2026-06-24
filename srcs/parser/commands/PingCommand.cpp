@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:34 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 16:45:43 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 00:04:46 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ PingCommand::PingCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 
 void PingCommand::exec()
 {
-	if (myArgs[0].empty())
-		myIrc.sendError(User *sender, User *receiver, Channel *aChannel, int errType, std::string command)
+	if (myArgs.size() < 1)
+		myIrc.sendError(&myUser, NULL, ERR_NEEDMOREPARAMS, "PING");
 	else
-		myIrc.sendMessage(myUser, "PONG");
+		myIrc.sendMessage(myUser, "PONG "+ myArgs[0]);
 }
 

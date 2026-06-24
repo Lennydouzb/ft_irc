@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:44:09 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 22:54:05 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -80,10 +80,9 @@ class Irc
 		User&		getUser(std::string nick);
 		Channel&	getChannel(std::string);
 		std::vector<Channel*>& getChannels();
-		void	sendMessage(User &sender, User& receiver, std::string message);
-		void	sendMessage(User &sender, Channel& receiver, std::string message);
 		void	sendMessage(User& receiver, std::string message);
-		void	sendError(User* sender, User* receiver, Channel* aChannel, int errType, std::string command);
+		void	sendMessage(User& sender, Channel& receiver, std::string message);
+		void	sendError(User* sender, Channel* aChannel, int errType, std::string command);
 		std::string	getPrefix() const;
 };
 

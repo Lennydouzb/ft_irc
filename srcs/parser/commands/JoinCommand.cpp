@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:47:32 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 23:53:51 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,10 @@ JoinCommand::JoinCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 void JoinCommand::exec()
 {
 	if (myArgs.size() < 1)
-
+	{
+		myIrc.sendError(&myUser, NULL, ERR_NEEDMOREPARAMS, "");
+		return ;
+	}
 	if (this->myUser.isUserReady())
 	{
 		if (myIrc.channelExist(myArgs[0]))
@@ -28,6 +31,8 @@ void JoinCommand::exec()
 			Channel& myChannel = myIrc.getChannel(myArgs[0]);
 			if (myChannel.getIsInviteOnly() && !myChannel.isUserInvited(myUser))
 			{
+
+				myIrc.sendError(&myUser, NULL, ERR_INVITEONLYCHAN, "");
 				return;
 			}
 			std::string passwd;
@@ -37,6 +42,12 @@ void JoinCommand::exec()
 				passwd = "";
 			if (!myChannel.checkPassword(passwd))
 			{
+				myIrc.sendError(&myUser, NULL, ERR_BADCHANNELKEY, "");
+				return ;
+			}
+			if (myChannel.getUserLimit() >= myChannel.getUsers().size())
+			{
+				myIrc.sendError(&myUser, NULL, ERR_CHANNELISFULL, "");
 				return ;
 			}
 			std::string joinMsg = myUser.getPrefix() + "JOIN :"+ myChannel.getName() +"\r\n";
@@ -70,5 +81,8 @@ void JoinCommand::exec()
 			myIrc.sendMessage(myUser, endofnames);
 		}
 	}
+	else
+		myIrc.sendError(&myUser, NULL, ERR_NOTREGISTERED, "");
+
 }
 

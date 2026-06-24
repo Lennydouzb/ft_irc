@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:30:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:27:09 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 00:02:54 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,31 +19,41 @@ KickCommand::KickCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 
 void KickCommand::exec()
 {
-    if (this->myUser.isUserReady())
-    {
+	if (this->myUser.isUserReady())
+	{
 		if (myArgs.size() >= 2)
 		{
 			if (myIrc.channelExist(myArgs[0]))
 			{
 				Channel& myChannel = myIrc.getChannel(myArgs[0]);
-				if (myChannel.isUserOp(myUser))
+				if (myChannel.isUserIn(myUser))
 				{
-					if(myIrc.checkExistingNick(myArgs[1]))
+					if (myChannel.isUserOp(myUser))
 					{
-						User &anUser = myIrc.getUser(myArgs[1]);
-						std::string reason = "";
-						std::string message = "KICK #" + myChannel.getName() + " " + anUser.getNickname();
-						if (myArgs.size() > 2 && !myArgs[2].empty())
-							reason = myArgs[2];
-						message = myUser.getPrefix() + reason;
-						myChannel.removeUser(anUser);
-						myIrc.sendMessage(myUser, myChannel, message);
+						if(myIrc.checkExistingNick(myArgs[1]))
+						{
+							User &anUser = myIrc.getUser(myArgs[1]);
+							std::string reason = "";
+							std::string message = "KICK #" + myChannel.getName() + " " + anUser.getNickname();
+							if (myArgs.size() > 2 && !myArgs[2].empty())
+								reason = myArgs[2];
+							message = myUser.getPrefix() + reason;
+							myChannel.removeUser(anUser);
+							myIrc.sendMessage(myUser, myChannel, message);
+						}
+						else
+							myIrc.sendError(&myUser, &myChannel, ERR_USERNOTINCHANNEL, myArgs[0]);
 					}
-				}
-
+					else
+						myIrc.sendError(&myUser, &myChannel, ERR_CHANOPRIVSNEEDED, "");				}
+				else
+					myIrc.sendError(&myUser, &myChannel, ERR_NOTONCHANNEL, "");
 			}
 			else
-				myIrc.sendError(&myUser, NULL, NULL, ERR_NOSUCHCHANNEL, "");
+				myIrc.sendError(&myUser, NULL, ERR_NOSUCHCHANNEL, myArgs[0]);
 		}
-    }
+		else
+			myIrc.sendError(&myUser, NULL, ERR_NEEDMOREPARAMS, "KICK");
+
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:40 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/15 14:06:39 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 23:57:31 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,15 @@ void UserCommand::exec()
 				myUser.setUsername(myArgs[0]);
 				myUser.setRealname(myArgs[3]);
 			}
+			else
+				myIrc.sendError(&myUser, NULL, ERR_ALREADYREGISTERED, "");
+
 		}
+		else
+			myIrc.sendError(&myUser, NULL, ERR_NOTREGISTERED, "");
+
 	}
+	else
+		myIrc.sendError(&myUser, NULL, ERR_NEEDMOREPARAMS, "USER");
 }
 

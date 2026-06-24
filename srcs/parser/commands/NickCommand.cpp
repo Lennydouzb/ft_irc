@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:31 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 18:07:19 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 21:10:07 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,20 +25,20 @@ void NickCommand::exec()
 	{
 		if (myArgs.size() != 1)
 		{
-			myIrc.sendError(&myUser, NULL, NULL, ERR_NONICKNAMEGIVEN, "");
+			myIrc.sendError(&myUser, NULL, ERR_NONICKNAMEGIVEN, "");
 		}
 		if (!myUser.isNickUsable(myArgs[0]))
 		{
-			myIrc.sendError(&myUser, NULL, NULL, ERR_ERRONEUSNICKNAME, myArgs[0]);
+			myIrc.sendError(&myUser, NULL, ERR_ERRONEUSNICKNAME, myArgs[0]);
 			return;
 		}
 		if (!myIrc.checkExistingNick(myArgs[0]))
 			myUser.setNickname(myArgs[0]);
 		else
-			myIrc.sendError(&myUser, NULL, NULL, ERR_NICKNAMEINUSE, myArgs[0]);
+			myIrc.sendError(&myUser, NULL, ERR_NICKNAMEINUSE, myArgs[0]);
 
 	}
 	else
-		myIrc.sendError(&myUser, NULL, NULL, ERR_NOTEXTTOSEND, "");
+		myIrc.sendError(&myUser, NULL, ERR_NOTEXTTOSEND, "");
 }
 

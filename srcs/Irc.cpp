@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:46:18 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/24 22:55:29 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,7 +140,7 @@ void Irc::run()
 	}
 }
 
-void    Irc::sendError(User* sender, User* receiver, Channel* aChannel, int errType, std::string command)
+void    Irc::sendError(User* sender, Channel* aChannel, int errType, std::string command)
 {
     std::string clientName;
 	if (sender->getNickname().empty() )
@@ -239,7 +239,9 @@ void    Irc::sendError(User* sender, User* receiver, Channel* aChannel, int errT
     }
 
     this->sendMessage(*sender, msg);
-}void	Irc::sendMessage(User &sender, User& receiver, std::string message)
+}
+
+void	Irc::sendMessage( User& receiver, std::string message)
 {
 	//user to user
 	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
@@ -284,27 +286,6 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 				(void)bytesRead;
 			}
 		}
-	}
-}
-
-void	Irc::sendMessage(User& receiver, std::string message)
-{
-	//server to user
-	if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
-	{
-		message += "\r\n";
-	}
-	ssize_t bytesRead = 0;
-	while (!message.empty() && bytesRead != -1)
-	{
-		bytesRead = send(receiver.getSocket(), message.c_str(), message.length(), 0);
-		if (bytesRead > 0)
-			message.erase(0, bytesRead);
-	}
-	if (bytesRead == -1)
-	{
-		// error
-		(void)bytesRead;
 	}
 }
 
