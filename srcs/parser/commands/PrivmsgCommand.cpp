@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:35 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 22:54:29 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 01:27:29 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void PrivmsgCommand::exec()
 	{
 		if (myArgs.size() == 2)
 		{
-			if (myArgs[1].size() == 1)
+			if (myArgs[1].size() == 0)
 			{
 				myIrc.sendError(&myUser, NULL, ERR_NOTEXTTOSEND, "");
 				return ;
@@ -36,7 +36,7 @@ void PrivmsgCommand::exec()
 			{
 				if (myIrc.channelExist(myArgs[0]))
 				{
-					std::string message = prefix + "PRIVMSG #"  + myArgs[0] + " :" + myArgs[1];
+					std::string message = prefix + "PRIVMSG "  + myArgs[0] + " :" + myArgs[1];
 					Channel& myChannel = myIrc.getChannel(myArgs[0]);
 					if (myChannel.isUserIn(myUser))
 						myIrc.sendMessage(myUser, myChannel, message);
@@ -62,10 +62,10 @@ void PrivmsgCommand::exec()
 		{
 			if (myArgs.size() == 1)
 			{
-				if (myArgs[0][0] == ':')
-					myIrc.sendError(&myUser, NULL, ERR_NORECIPIENT, "PRIVMSG");
-				else
-					myIrc.sendError(&myUser, NULL, ERR_NOTEXTTOSEND, "");
+		//		if (myArgs[0][0] == ':')
+		//			myIrc.sendError(&myUser, NULL, ERR_NORECIPIENT, "PRIVMSG");
+		//		else
+		//			myIrc.sendError(&myUser, NULL, ERR_NOTEXTTOSEND, "");
 			}
 			else if (myArgs.size() == 0)
 				myIrc.sendError(&myUser, NULL, ERR_NORECIPIENT, "PRIVMSG");

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:30:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 00:02:54 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 01:36:33 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,10 @@ void KickCommand::exec()
 						{
 							User &anUser = myIrc.getUser(myArgs[1]);
 							std::string reason = "";
-							std::string message = "KICK #" + myChannel.getName() + " " + anUser.getNickname();
+							std::string message = "KICK " + myChannel.getName() + " " + anUser.getNickname();
 							if (myArgs.size() > 2 && !myArgs[2].empty())
 								reason = myArgs[2];
-							message = myUser.getPrefix() + reason;
+							message = myUser.getPrefix() + message + reason;
 							myChannel.removeUser(anUser);
 							myIrc.sendMessage(myUser, myChannel, message);
 						}

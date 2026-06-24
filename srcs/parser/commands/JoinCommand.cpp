@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 23:53:51 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 01:25:57 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,19 +65,18 @@ void JoinCommand::exec()
 					
 				nameList += users[i]->getNickname() + " ";
 			}
-			myIrc.sendMessage(myUser, "353 " + myUser.getNickname() + " = " + myChannel.getName() + " :" + nameList);
-			myIrc.sendMessage(myUser, "366 " + myUser.getNickname() + " " + myChannel.getName() + " :End of /NAMES list.");
+			myIrc.sendMessage(myUser, myIrc.getPrefix() +" 353 " + myUser.getNickname() + " = " + myChannel.getName() + " :" + nameList);
+			myIrc.sendMessage(myUser, myIrc.getPrefix() +" 366 " + myUser.getNickname() + " " + myChannel.getName() + " :End of /NAMES list.");
 		}
 		else
 		{
-			std::string name = myArgs[0].substr(1, myArgs[0].length());
-			Channel* aChannel = new Channel(myUser, name); 
+			Channel* aChannel = new Channel(myUser, myArgs[0]); 
 			myIrc.addChannel(*aChannel);
-			std::string joinMsg = myUser.getPrefix() + "JOIN :" + name + "\r\n";
+			std::string joinMsg = myUser.getPrefix() + "JOIN :" + myArgs[0] + "\r\n";
   			send(myUser.getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
-			std::string namreply = "353 " + myUser.getNickname() + " = " + myArgs[0] + " :@" + myUser.getNickname();
+			std::string namreply = myIrc.getPrefix()  +" 353 " + myUser.getNickname() + " = " + myArgs[0] + " :@" + myUser.getNickname();
 			myIrc.sendMessage(myUser, namreply);
-			std::string endofnames = "366 " + myUser.getNickname() + " " + myArgs[0] + " :End of /NAMES list.";
+			std::string endofnames = myIrc.getPrefix() + " 366 " + myUser.getNickname() + " " + myArgs[0] + " :End of /NAMES list.";
 			myIrc.sendMessage(myUser, endofnames);
 		}
 	}
