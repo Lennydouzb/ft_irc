@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:09:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 14:09:19 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 16:51:01 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,6 @@ class ACommand
         User&                    myUser;
     public:
         ACommand(std::vector<std::string> args, User& anUser, Irc& anIrc);
+		virtual ~ACommand();
         virtual void exec() = 0;
 };

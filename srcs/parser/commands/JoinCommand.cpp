@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 01:25:57 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 16:48:46 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,12 +42,12 @@ void JoinCommand::exec()
 				passwd = "";
 			if (!myChannel.checkPassword(passwd))
 			{
-				myIrc.sendError(&myUser, NULL, ERR_BADCHANNELKEY, "");
+				myIrc.sendError(&myUser, &myChannel, ERR_BADCHANNELKEY, "");
 				return ;
 			}
-			if (myChannel.getUserLimit() >= myChannel.getUsers().size())
+			if (myChannel.getUserLimit() != 0 && myChannel.getUserLimit() >= myChannel.getUsers().size())
 			{
-				myIrc.sendError(&myUser, NULL, ERR_CHANNELISFULL, "");
+				myIrc.sendError(&myUser, &myChannel, ERR_CHANNELISFULL, "");
 				return ;
 			}
 			std::string joinMsg = myUser.getPrefix() + "JOIN :"+ myChannel.getName() +"\r\n";
@@ -55,7 +55,7 @@ void JoinCommand::exec()
 			std::vector<User*>& users = myChannel.getUsers();
 			for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
 			{
-				send((*it)->getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
+				(*it)->addBuffer(joinMsg);
 			}
 			std::string nameList = "";
 			for (size_t i = 0; i < users.size(); ++i)
@@ -73,7 +73,7 @@ void JoinCommand::exec()
 			Channel* aChannel = new Channel(myUser, myArgs[0]); 
 			myIrc.addChannel(*aChannel);
 			std::string joinMsg = myUser.getPrefix() + "JOIN :" + myArgs[0] + "\r\n";
-  			send(myUser.getSocket(), joinMsg.c_str(), joinMsg.length(), 0);
+  			myIrc.sendMessage(myUser, joinMsg);
 			std::string namreply = myIrc.getPrefix()  +" 353 " + myUser.getNickname() + " = " + myArgs[0] + " :@" + myUser.getNickname();
 			myIrc.sendMessage(myUser, namreply);
 			std::string endofnames = myIrc.getPrefix() + " 366 " + myUser.getNickname() + " " + myArgs[0] + " :End of /NAMES list.";

@@ -20,6 +20,7 @@ User::User(int fd, std::string nickname, std::string username)
 	this->socket = fd;
 	this->realname = "";
 	this->isPasswordVerified = false;
+	this->isWelcomed = false;
 }
 
 User::~User()
@@ -117,4 +118,12 @@ std::string&	User::getSendBuffer()
 void	User::addBuffer(std::string str)
 {
 	this->sendBuffer += str;
+}
+bool	User::getIsWelcomed()
+{
+	return this->isWelcomed;
+}
+void	User::setWelcomed()
+{
+	this->isWelcomed = true;
 }

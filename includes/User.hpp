@@ -26,6 +26,7 @@ class User
 		bool 			isPasswordVerified;
 		struct pollfd	pollfd;
 		std::string		sendBuffer;
+		bool			isWelcomed;
 
 	public:
 		class TheException: public std::exception
@@ -56,4 +57,6 @@ class User
 		bool			isNickUsable(std::string nick) const;
 		std::string&	getSendBuffer();
 		void			addBuffer(std::string str);
+		bool			getIsWelcomed();
+		void			setWelcomed();
 };

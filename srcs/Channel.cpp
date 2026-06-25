@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:04:55 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 16:44:05 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,10 @@ Channel::Channel(User& theOperator, std::string name)
 	this->operators.push_back(&theOperator);
 	this->users.push_back(&theOperator);
 	this->name = name;
+	this->isInviteOnly = false;
+	this->userLimit = 0;
+	this->restrictedTopic = false;
+	this->password = "";
 }
 
 Channel::~Channel(){}

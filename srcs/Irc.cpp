@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 13:24:09 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 15:36:39 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,6 +121,7 @@ void Irc::run()
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
+							fds.erase(fds.begin() + i);
 							i--;
 							continue;
 						}
@@ -129,6 +130,7 @@ void Irc::run()
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
+							fds.erase(fds.begin() + i);
 							i--;
 							continue;
 						}
@@ -156,6 +158,7 @@ void Irc::run()
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
+							fds.erase(fds.begin() + i);
 							i--;
 							continue;
 						}

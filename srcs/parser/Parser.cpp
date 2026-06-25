@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:26:33 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/17 10:42:37 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 16:54:08 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,6 +74,7 @@ void Parser::parse(User &user, std::string arg, Irc &anIrc)
 	if (myCommand)
 	{
 		myCommand->exec();
+		delete myCommand;
 	}
 }
 std::vector<std::string> split(std::string message)

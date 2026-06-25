@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:30:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 13:19:31 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 16:03:01 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,12 +34,22 @@ void KickCommand::exec()
 						{
 							User &anUser = myIrc.getUser(myArgs[1]);
 							std::string reason = "";
-							std::string message = "KICK " + myChannel.getName() + " " + anUser.getNickname();
+							std::string message = " KICK " + myChannel.getName() + " " + anUser.getNickname();
 							if (myArgs.size() > 2 && !myArgs[2].empty())
 								reason = myArgs[2];
+							if (reason != "")
+								message += " ";
 							message = myUser.getPrefix() + message + reason;
-							myChannel.removeUser(anUser);
-							myIrc.sendMessage(myUser, myChannel, message);
+							std::vector<User*>& users = myChannel.getUsers();
+							for (std::vector<User*>::iterator it = users.begin(); it != users.end(); ++it)
+							{
+									if (message.size() < 2 || message.substr(message.size() - 2) != "\r\n")
+									{
+										message += "\r\n";
+									}
+									(*it)->addBuffer(message);
+							}
+							myChannel.removeUser(anUser);	
 						}
 						else
 							myIrc.sendError(&myUser, &myChannel, ERR_USERNOTINCHANNEL, myArgs[0]);
