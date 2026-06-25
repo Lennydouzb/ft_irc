@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 13:17:34 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:40:04 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,9 @@ User::~User()
 	if (this->socket > 0)
 	{
 		close(this->socket);
+		this->socket = -1;
 	}
     close(this->pollfd.fd);
-    
-
 }
 void User::verifyPassword()
 {
@@ -53,6 +52,14 @@ int User::getSocket()
 	return this->socket;
 }
 
+void	User::closeSocket()
+{
+	if (this->socket != -1)
+	{
+		close (this->socket);
+		this->socket = -1;
+	}
+}
 std::string User::getNickname()
 {
 	return this->nickname;

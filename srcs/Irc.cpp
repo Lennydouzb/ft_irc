@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 15:36:39 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:59:41 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,8 +48,13 @@ Irc::Irc(u_int16_t port, std::string password)
 
 Irc::~Irc()
 {
-	for (size_t i = 0; i < this->Users.size(); ++i) {
+	for (size_t i = 0; i < this->Users.size(); ++i)
+	{
 		delete this->Users[i];
+	}
+	for (size_t i = 0; i < this->openedChannel.size(); ++i)
+	{
+		delete this->openedChannel[i];
 	}
 	this->Users.clear();
 	this->messages.clear();
@@ -102,9 +107,11 @@ void Irc::run()
 			{
 				if (fds[i].revents & (POLLHUP | POLLNVAL | POLLERR))
 				{
+					this->removeFromChannels(*(this->Users[i]), "Remote host closed the connection");
 					delete this->Users[i];
 					this->Users.erase(this->Users.begin() + i);
 					this->messages.erase(this->messages.begin() + i);
+					fds.erase(fds.begin() + i);
 					i--;
 					continue;
 				}
@@ -118,6 +125,7 @@ void Irc::run()
 
 						if (bytesRead < 0)
 						{
+							this->removeFromChannels(*(this->Users[i]), "Remote host closed the connection");
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
@@ -127,6 +135,7 @@ void Irc::run()
 						}
 						if (bytesRead == 0)
 						{
+							this->removeFromChannels(*(this->Users[i]), "Remote host closed the connection");
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
@@ -155,6 +164,7 @@ void Irc::run()
 						}
 						if (bytesSend < 0)
 						{
+							this->removeFromChannels(*(this->Users[i]), "Remote host closed the connection");
 							delete this->Users[i];
 							this->Users.erase(this->Users.begin() + i);
 							this->messages.erase(this->messages.begin() + i);
@@ -371,6 +381,33 @@ Channel&	Irc::getChannel(std::string name)
 std::string	Irc::getPrefix() const
 {
 	return ":ft_irc ";
+}
+
+void	Irc::removeFromChannels(User& anUser, std::string reason)
+{
+	std::string quitMsg = anUser.getPrefix() + "QUIT :Quit: " + reason + "\r\n";
+	std::vector<Channel*>& myChannels = this->getChannels();
+	std::vector<Channel*>::iterator it = myChannels.begin();
+	while (it != myChannels.end())
+	{
+		if ((*it)->isUserIn(anUser))
+		{
+			std::vector<User*>& users = (*it)->getUsers();
+			for (size_t i = 0; i < users.size(); ++i)
+			{
+				if (users[i] != &anUser) 
+					users[i]->addBuffer(quitMsg);
+			}
+			(*it)->removeUser(anUser);
+		}
+		if ((*it)->getUsers().size() == 0)
+		{
+			delete *it;
+			it = myChannels.erase(it);
+		}
+		else
+			++it;
+	}
 }
 
 Irc::TheException::~TheException() throw() {}

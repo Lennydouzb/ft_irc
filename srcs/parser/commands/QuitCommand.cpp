@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:09:44 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 15:37:05 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:42:28 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,21 +22,19 @@ QuitCommand::QuitCommand(std::vector<std::string> args, User& anUser, Irc& anIrc
 
 void QuitCommand::exec()
 {
-	if (myUser.isUserReady())
+	std::string message = "";
+
+	if (myArgs.size() > 0 && !myArgs[0].empty())
+		message = myArgs[0];
+	std::vector<Channel*> myChannels = myIrc.getChannels(); 
+	for (std::vector<Channel*>::iterator it = myChannels.begin(); it != myChannels.end(); ++it)
 	{
-		std::string message = "";
-		if (!myArgs[0].empty())
-			message = myArgs[0];
-		std::vector<Channel*> myChannels = myIrc.getChannels(); 
-		for (std::vector<Channel*>::iterator it = myChannels.begin(); it != myChannels.end(); ++it)
-		{
-			if ((*it)->isUserIn(myUser))
-			{
-				myIrc.sendMessage(myUser, **it, message);
-				(*it)->removeUser(myUser);
-			}
-		}
+		if ((*it)->isUserIn(myUser))
+			myIrc.sendMessage(myUser, **it, message);
 	}
-	close (myUser.getSocket());
+	if (myUser.getSocket() != -1)
+	{
+        myUser.closeSocket();
+	}
 }
 

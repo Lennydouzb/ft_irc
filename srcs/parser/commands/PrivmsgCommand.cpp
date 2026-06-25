@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:35 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 15:37:01 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:43:22 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void PrivmsgCommand::exec()
 				return ;
 			}
 			std::string prefix = myUser.getPrefix();
-			if (*(myArgs[0].begin()) == '#')
+			if (!myArgs[0].empty() && myArgs[0][0] == '#')
 			{
 				if (myIrc.channelExist(myArgs[0]))
 				{

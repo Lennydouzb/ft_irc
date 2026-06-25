@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/16 14:26:33 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 16:54:08 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:40:33 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,5 +94,8 @@ std::vector<std::string> split(std::string message)
         else
             args.push_back(tmp);
     }
+	std::string& last = args.back();
+    if (!last.empty() && last[last.size() - 1] == '\r')
+        last.erase(last.size() - 1);
     return (args);
 }

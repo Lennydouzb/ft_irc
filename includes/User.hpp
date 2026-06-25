@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 12:49:35 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:39:30 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -59,4 +59,5 @@ class User
 		void			addBuffer(std::string str);
 		bool			getIsWelcomed();
 		void			setWelcomed();
+		void			closeSocket();
 };

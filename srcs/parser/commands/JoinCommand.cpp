@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:28 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 16:48:46 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:51:26 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,16 @@ void JoinCommand::exec()
 	}
 	if (this->myUser.isUserReady())
 	{
+		if (myArgs[0].empty() || myArgs[0][0] != '#')
+		{
+			myIrc.sendError(&myUser, NULL, ERR_NOSUCHCHANNEL, myArgs[0]);
+			return;
+		}
 		if (myIrc.channelExist(myArgs[0]))
 		{
 			Channel& myChannel = myIrc.getChannel(myArgs[0]);
 			if (myChannel.getIsInviteOnly() && !myChannel.isUserInvited(myUser))
 			{
-
 				myIrc.sendError(&myUser, NULL, ERR_INVITEONLYCHAN, "");
 				return;
 			}
@@ -45,7 +49,7 @@ void JoinCommand::exec()
 				myIrc.sendError(&myUser, &myChannel, ERR_BADCHANNELKEY, "");
 				return ;
 			}
-			if (myChannel.getUserLimit() != 0 && myChannel.getUserLimit() >= myChannel.getUsers().size())
+			if (myChannel.getUserLimit() != 0 && myChannel.getUserLimit() <= myChannel.getUsers().size())
 			{
 				myIrc.sendError(&myUser, &myChannel, ERR_CHANNELISFULL, "");
 				return ;

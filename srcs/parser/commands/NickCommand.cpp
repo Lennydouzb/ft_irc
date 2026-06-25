@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/13 20:05:31 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 21:10:07 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 20:37:55 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ void NickCommand::exec()
 		if (myArgs.size() != 1)
 		{
 			myIrc.sendError(&myUser, NULL, ERR_NONICKNAMEGIVEN, "");
+			return ;
 		}
 		if (!myUser.isNickUsable(myArgs[0]))
 		{
