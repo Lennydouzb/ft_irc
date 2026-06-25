@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 22:55:29 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 13:24:09 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,13 @@ void Irc::run()
 		std::vector<pollfd> fds;
 		for (size_t idx = 0; idx < this->Users.size(); ++idx)
 		{
-			fds.push_back(this->Users[idx]->getpollfd());
+			struct pollfd aPollfd = this->Users[idx]->getpollfd();
+			aPollfd.events = POLLIN;
+			if (!this->Users[idx]->getSendBuffer().empty())
+			{
+				aPollfd.events |= POLLOUT;	
+			}
+			fds.push_back(aPollfd);
 		}
 		if (fds.empty())
 			continue;
@@ -102,37 +108,57 @@ void Irc::run()
 					i--;
 					continue;
 				}
-				else if (fds[i].revents & POLLIN)
+				else
 				{
-					char buffer[1024];
-					memset(buffer, 0, sizeof(buffer));
-					int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
+					if (fds[i].revents & POLLIN)
+					{
+						char buffer[1024];
+						memset(buffer, 0, sizeof(buffer));
+						int bytesRead = recv(fds[i].fd, buffer, sizeof(buffer) - 1, 0);
 
-					if (bytesRead < 0)
-					{
-						delete this->Users[i];
-						this->Users.erase(this->Users.begin() + i);
-						this->messages.erase(this->messages.begin() + i);
-						i--;
-						continue;
+						if (bytesRead < 0)
+						{
+							delete this->Users[i];
+							this->Users.erase(this->Users.begin() + i);
+							this->messages.erase(this->messages.begin() + i);
+							i--;
+							continue;
+						}
+						if (bytesRead == 0)
+						{
+							delete this->Users[i];
+							this->Users.erase(this->Users.begin() + i);
+							this->messages.erase(this->messages.begin() + i);
+							i--;
+							continue;
+						}
+						buffer[bytesRead] = '\0';
+						this->messages[i].append(buffer, bytesRead);
+						size_t pos;
+						while ((pos = this->messages[i].find('\n')) != std::string::npos)
+						{
+							std::string message = this->messages[i].substr(0, pos + 1);
+							this->messages[i].erase(0, pos + 1);
+							std::cout << message << std::endl;
+							this->Parser.parse(*(this->Users[i]), message, *this);
+						}
 					}
-					if (bytesRead == 0)
+					if (fds[i].revents & POLLOUT)
 					{
-						delete this->Users[i];
-						this->Users.erase(this->Users.begin() + i);
-						this->messages.erase(this->messages.begin() + i);
-						i--;
-						continue;
-					}
-					buffer[bytesRead] = '\0';
-					this->messages[i].append(buffer, bytesRead);
-					size_t pos;
-					while ((pos = this->messages[i].find('\n')) != std::string::npos)
-					{
-						std::string message = this->messages[i].substr(0, pos + 1);
-						this->messages[i].erase(0, pos + 1);
-						std::cout << message << std::endl;
-						this->Parser.parse(*(this->Users[i]), message, *this);
+						std::string& userBuffer = Users[i]->getSendBuffer();
+						ssize_t bytesSend = send(fds[i].fd, userBuffer.c_str(), userBuffer.length(), 0);
+						if (bytesSend > 0)
+						{
+							userBuffer.erase(0, bytesSend);
+						}
+						if (bytesSend < 0)
+						{
+							delete this->Users[i];
+							this->Users.erase(this->Users.begin() + i);
+							this->messages.erase(this->messages.begin() + i);
+							i--;
+							continue;
+						}
 					}
 				}
 			}
@@ -142,103 +168,103 @@ void Irc::run()
 
 void    Irc::sendError(User* sender, Channel* aChannel, int errType, std::string command)
 {
-    std::string clientName;
+	std::string clientName;
 	if (sender->getNickname().empty() )
 		clientName = "*";
 	else
 		clientName = sender->getNickname();
-    std::string srvPrefix = this->getPrefix() + " "; 
-    std::string msg;
+	std::string srvPrefix = this->getPrefix() + " "; 
+	std::string msg;
 
-    switch (errType) 
-    {
-        case ERR_NOSUCHNICK:
-            msg = srvPrefix + "401 " + clientName + " " + command + " :No such nick/channel";
-            break;
+	switch (errType) 
+	{
+		case ERR_NOSUCHNICK:
+			msg = srvPrefix + "401 " + clientName + " " + command + " :No such nick/channel";
+			break;
 
-        case ERR_NOSUCHCHANNEL:
-            msg = srvPrefix + "403 " + clientName + " " + command + " :No such channel";
-            break;
+		case ERR_NOSUCHCHANNEL:
+			msg = srvPrefix + "403 " + clientName + " " + command + " :No such channel";
+			break;
 
-        case ERR_CANNOTSENDTOCHAN:
-            msg = srvPrefix + "404 " + clientName + " " + aChannel->getName() + " :Cannot send to channel";
-            break;
+		case ERR_CANNOTSENDTOCHAN:
+			msg = srvPrefix + "404 " + clientName + " " + aChannel->getName() + " :Cannot send to channel";
+			break;
 
-        case ERR_NOORIGIN:
-            msg = srvPrefix + "409 " + clientName + " :No origin specified";
-            break;
+		case ERR_NOORIGIN:
+			msg = srvPrefix + "409 " + clientName + " :No origin specified";
+			break;
 
-        case ERR_NORECIPIENT:
-            msg = srvPrefix + "411 " + clientName + " :No recipient given (" + command + ")";
-            break;
+		case ERR_NORECIPIENT:
+			msg = srvPrefix + "411 " + clientName + " :No recipient given (" + command + ")";
+			break;
 
-        case ERR_NOTEXTTOSEND:
-            msg = srvPrefix + "412 " + clientName + " :No text to send";
-            break;
+		case ERR_NOTEXTTOSEND:
+			msg = srvPrefix + "412 " + clientName + " :No text to send";
+			break;
 
-        case ERR_NONICKNAMEGIVEN:
-            msg = srvPrefix + "431 " + clientName + " :No nickname given";
-            break;
+		case ERR_NONICKNAMEGIVEN:
+			msg = srvPrefix + "431 " + clientName + " :No nickname given";
+			break;
 
-        case ERR_ERRONEUSNICKNAME:
-            msg = srvPrefix + "432 " + clientName + " " + command + " :Erroneous nickname";
-            break;
+		case ERR_ERRONEUSNICKNAME:
+			msg = srvPrefix + "432 " + clientName + " " + command + " :Erroneous nickname";
+			break;
 
-        case ERR_NICKNAMEINUSE:
-            msg = srvPrefix + "433 " + clientName + " " + command + " :Nickname is already in use";
-            break;
+		case ERR_NICKNAMEINUSE:
+			msg = srvPrefix + "433 " + clientName + " " + command + " :Nickname is already in use";
+			break;
 
-        case ERR_USERNOTINCHANNEL:
-            msg = srvPrefix + "441 " + clientName + " " + command + " " + aChannel->getName() + " :They aren't on that channel";
-            break;
+		case ERR_USERNOTINCHANNEL:
+			msg = srvPrefix + "441 " + clientName + " " + command + " " + aChannel->getName() + " :They aren't on that channel";
+			break;
 
-        case ERR_NOTONCHANNEL:
-            msg = srvPrefix + "442 " + clientName + " " + aChannel->getName() + " :You're not on that channel";
-            break;
+		case ERR_NOTONCHANNEL:
+			msg = srvPrefix + "442 " + clientName + " " + aChannel->getName() + " :You're not on that channel";
+			break;
 
-        case ERR_NEEDMOREPARAMS:
-            msg = srvPrefix + "461 " + clientName + " " + command + " :Not enough parameters";
-            break;
+		case ERR_NEEDMOREPARAMS:
+			msg = srvPrefix + "461 " + clientName + " " + command + " :Not enough parameters";
+			break;
 
-        case ERR_CHANNELISFULL:
-            msg = srvPrefix + "471 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+l)";
-            break;
+		case ERR_CHANNELISFULL:
+			msg = srvPrefix + "471 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+l)";
+			break;
 
-        case ERR_UNKNOWNMODE:
-            msg = srvPrefix + "472 " + clientName + " " + command + " :is unknown mode char to me for " + aChannel->getName();
-            break;
+		case ERR_UNKNOWNMODE:
+			msg = srvPrefix + "472 " + clientName + " " + command + " :is unknown mode char to me for " + aChannel->getName();
+			break;
 
-        case ERR_INVITEONLYCHAN:
-            msg = srvPrefix + "473 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+i)";
-            break;
+		case ERR_INVITEONLYCHAN:
+			msg = srvPrefix + "473 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+i)";
+			break;
 
-        case ERR_BADCHANNELKEY:
-            msg = srvPrefix + "475 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+k)";
-            break;
+		case ERR_BADCHANNELKEY:
+			msg = srvPrefix + "475 " + clientName + " " + aChannel->getName() + " :Cannot join channel (+k)";
+			break;
 
-        case ERR_CHANOPRIVSNEEDED:
-            msg = srvPrefix + "482 " + clientName + " " + aChannel->getName() + " :You're not channel operator";
-            break;
+		case ERR_CHANOPRIVSNEEDED:
+			msg = srvPrefix + "482 " + clientName + " " + aChannel->getName() + " :You're not channel operator";
+			break;
 
-        case ERR_UMODEUNKNOWNFLAG:
-            msg = srvPrefix + "501 " + clientName + " :Unknown MODE flag";
-            break;
+		case ERR_UMODEUNKNOWNFLAG:
+			msg = srvPrefix + "501 " + clientName + " :Unknown MODE flag";
+			break;
 
-        case ERR_USERSDONTMATCH:
-            msg = srvPrefix + "502 " + clientName + " :Cannot change mode for other users";
-            break;
+		case ERR_USERSDONTMATCH:
+			msg = srvPrefix + "502 " + clientName + " :Cannot change mode for other users";
+			break;
 
 		case ERR_NOTREGISTERED:
-            msg = srvPrefix + "451 " + clientName + " :You have not registered";
+			msg = srvPrefix + "451 " + clientName + " :You have not registered";
 			break;
 		case ERR_ALREADYREGISTERED:
-            msg = srvPrefix + "462 " + clientName + " :You may not reregister";
+			msg = srvPrefix + "462 " + clientName + " :You may not reregister";
 			break;
-        default:
-            return;
-    }
+		default:
+			return;
+	}
 
-    this->sendMessage(*sender, msg);
+	this->sendMessage(*sender, msg);
 }
 
 void	Irc::sendMessage( User& receiver, std::string message)
@@ -248,18 +274,7 @@ void	Irc::sendMessage( User& receiver, std::string message)
 	{
 		message += "\r\n";
 	}
-	ssize_t bytesRead = 0;
-	while (!message.empty() && bytesRead != -1)
-	{
-		bytesRead = send(receiver.getSocket(), message.c_str(), message.length(), 0);
-		if (bytesRead > 0)
-			message.erase(0, bytesRead);
-	}
-	if (bytesRead == -1)
-	{
-		// error
-		(void)bytesRead;
-	}
+	receiver.addBuffer(message);	
 }
 void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 {
@@ -273,18 +288,7 @@ void	Irc::sendMessage(User &sender, Channel& receiver, std::string message)
 			{
 				message += "\r\n";
 			}
-			ssize_t bytesRead = 0;
-			while (!message.empty() && bytesRead != -1)
-			{
-				bytesRead = send((**it).getSocket(), message.c_str(), message.length(), 0);
-				if (bytesRead > 0)
-					message.erase(0, bytesRead);
-			}
-			if (bytesRead == -1)
-			{
-				// error
-				(void)bytesRead;
-			}
+			(*it)->addBuffer(message);
 		}
 	}
 }

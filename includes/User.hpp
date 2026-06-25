@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:26:54 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:51:17 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 12:49:35 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -25,6 +25,7 @@ class User
 		int				socket;
 		bool 			isPasswordVerified;
 		struct pollfd	pollfd;
+		std::string		sendBuffer;
 
 	public:
 		class TheException: public std::exception
@@ -53,4 +54,6 @@ class User
 		void			setRealname(std::string realname);
 		std::string		getPrefix() const;
 		bool			isNickUsable(std::string nick) const;
+		std::string&	getSendBuffer();
+		void			addBuffer(std::string str);
 };

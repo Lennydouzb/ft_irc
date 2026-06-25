@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:13 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/24 17:54:20 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/25 13:17:34 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,4 +107,14 @@ bool	User::isNickUsable(std::string nick) const
 			return false;
 	}
 	return true;
+}
+
+std::string&	User::getSendBuffer()
+{
+	return this->sendBuffer;
+}
+
+void	User::addBuffer(std::string str)
+{
+	this->sendBuffer += str;
 }
