@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:38:16 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 20:56:18 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/26 14:01:02 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -57,7 +57,7 @@ class Irc
 		std::vector<Channel*>		openedChannel;
 		std::vector<User*>			Users;
 		std::vector<std::string>	messages;
-		Parser						Parser;
+		Parser						myParser;
 	public:
 		class TheException: public std::exception
 		{

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 11:13:18 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 20:59:41 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/26 14:01:30 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,7 +151,7 @@ void Irc::run()
 							std::string message = this->messages[i].substr(0, pos + 1);
 							this->messages[i].erase(0, pos + 1);
 							std::cout << message << std::endl;
-							this->Parser.parse(*(this->Users[i]), message, *this);
+							this->myParser.parse(*(this->Users[i]), message, *this);
 						}
 					}
 					if (fds[i].revents & POLLOUT)

@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/14 10:11:42 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/25 16:44:05 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/26 13:10:21 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,7 +112,7 @@ void	Channel::setName(const std::string &name)
 	this->name = name;
 }
 
-void	Channel::setTopic(const std::string &topic)
+void	Channel::setTopic(const std::string topic)
 {
 	this->topic = topic;
 }

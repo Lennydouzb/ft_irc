@@ -6,7 +6,7 @@
 /*   By: ldesboui <ldesboui@42angouleme.fr>         +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/06/08 09:37:07 by ldesboui          #+#    #+#             */
-/*   Updated: 2026/06/16 17:25:10 by ldesboui         ###   ########.fr       */
+/*   Updated: 2026/06/26 13:09:58 by ldesboui         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 #pragma once
@@ -44,7 +44,7 @@ class Channel
 	void	setPassword(std::string passwd);
 	void	setRestrictedTopic(bool val);
 	void	setName(const std::string &name);
-	void	setTopic(const std::string &topic);
+	void	setTopic(const std::string topic);
 	void	setInviteOnly(bool val);
 	void	setUserLimit(size_t limit);
 	bool	checkPassword(std::string passwd);
